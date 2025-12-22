@@ -171,17 +171,41 @@ const menu = document.getElementById("menuCategorias");
 const API_URL = "https://script.google.com/macros/s/AKfycbzRMs-fnDGAfUx8MqumhYbcFS5lgzbSz4bfeogGDqU79tjLJSJKgd2oGA6MaYeqYglu/exec?action=products";
 
 // 🔄 Buscar produtos da API
-fetch(API_URL)
-  .then(response => response.json())
-  .then(data => {
-    productsData = data;
-    initCategories();
-    render();
-  })
-  .catch(err => {
-    console.error("Erro ao carregar produtos:", err);
-    alert("Erro ao carregar produtos. Tente novamente.");
+<script>
+let productsData = [];
+let currentCategory = "Todos";
+const cart = {};
+
+const productsDiv = document.getElementById("products");
+const menu = document.getElementById("menuCategorias");
+
+function carregarProdutos(data) {
+  productsData = data;
+  initCategories();
+  render();
+}
+
+// cria script JSONP
+const script = document.createElement("script");
+script.src = "https://script.google.com/macros/s/AKfycby1DmSxjzotQVnEiCKHoYtqW6tkWqkAVedpRz25DzE/exec?callback=carregarProdutos";
+document.body.appendChild(script);
+
+function initCategories() {
+  menu.innerHTML = "";
+  const categories = ["Todos", ...new Set(productsData.map(p => p.category))];
+
+  categories.forEach(cat => {
+    const b = document.createElement("button");
+    b.innerText = cat;
+    b.onclick = () => {
+      currentCategory = cat;
+      render();
+    };
+    menu.appendChild(b);
   });
+}
+</script>
+
 
 // 📂 Criar menu de categorias
 function initCategories() {
