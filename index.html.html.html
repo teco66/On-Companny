@@ -150,10 +150,9 @@ h1{text-align:center;margin-top:40px;}
     <div class="info">
       <strong>Informações importantes:</strong><br>
       • Taxa de serviço: 15% para compras abaixo de 150.000 Kz e 10% acima desse valor.<br>
-      • Taxa alfandegária: 30% sobre o valor da nota (paga no momento da retirada).<br>
+      • Taxa alfandegária: 30% sobre o valor da nota (paga na retirada).<br>
       • Custo de peso: 16.000 Kz por kg da mercadoria.<br>
-      • O valor do peso é informado antes do envio do Brasil.<br>
-      Você pode revisar ou remover itens antes de finalizar.
+      • O valor do peso é informado antes do envio do Brasil.
     </div>
   </div>
 
@@ -167,47 +166,19 @@ const cart = {};
 const productsDiv = document.getElementById("products");
 const menu = document.getElementById("menuCategorias");
 
-// 🔗 URL DA SUA API (já testada)
-const API_URL = "https://script.google.com/macros/s/AKfycbzRMs-fnDGAfUx8MqumhYbcFS5lgzbSz4bfeogGDqU79tjLJSJKgd2oGA6MaYeqYglu/exec?action=products";
-
-// 🔄 Buscar produtos da API
-<script>
-let productsData = [];
-let currentCategory = "Todos";
-const cart = {};
-
-const productsDiv = document.getElementById("products");
-const menu = document.getElementById("menuCategorias");
-
+// CALLBACK JSONP
 function carregarProdutos(data) {
   productsData = data;
   initCategories();
   render();
 }
 
-// cria script JSONP
-const script = document.createElement("script");
-script.src = "https://script.google.com/macros/s/AKfycby1DmSxjzotQVnEiCKHoYtqW6tkWqkAVedpRz25DzE/exec?callback=carregarProdutos";
-document.body.appendChild(script);
+// CHAMADA DA API (JSONP)
+const apiScript = document.createElement("script");
+apiScript.src = "https://script.google.com/macros/s/AKfycbzRMs-fnDGAfUx8MqumhYbcFS5lgzbSz4bfeogGDqU79tjLJSJKgd2oGA6MaYeqYglu/exec?callback=carregarProdutos";
+document.body.appendChild(apiScript);
 
-function initCategories() {
-  menu.innerHTML = "";
-  const categories = ["Todos", ...new Set(productsData.map(p => p.category))];
-
-  categories.forEach(cat => {
-    const b = document.createElement("button");
-    b.innerText = cat;
-    b.onclick = () => {
-      currentCategory = cat;
-      render();
-    };
-    menu.appendChild(b);
-  });
-}
-</script>
-
-
-// 📂 Criar menu de categorias
+// MENU
 function initCategories() {
   menu.innerHTML = "";
   const categories = ["Todos", ...new Set(productsData.map(p => p.category))];
@@ -223,73 +194,76 @@ function initCategories() {
   });
 }
 
-function render(){
-  productsDiv.innerHTML="";
+// PRODUTOS
+function render() {
+  productsDiv.innerHTML = "";
+
   productsData
-    .filter(p=>currentCategory==="Todos"||p.category===currentCategory)
-    .forEach(p=>{
-      const card=document.createElement("div");
-      card.className="card";
-      card.innerHTML=`
+    .filter(p => currentCategory === "Todos" || p.category === currentCategory)
+    .forEach(p => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
         <img src="${p.image}">
         <h3>${p.name}</h3>
         <div><strong>${p.price.toLocaleString("pt-BR")} Kz</strong></div>
         <div class="controls">
           <input type="number" min="1" value="1" id="q-${p.id}">
           <button onclick="addToCart(${p.id})">Adicionar</button>
-        </div>`;
+        </div>
+      `;
       productsDiv.appendChild(card);
     });
 }
 
-function addToCart(id){
-  const p=productsData.find(x=>x.id===id);
-  const q=parseInt(document.getElementById("q-"+id).value);
-  cart[id]?cart[id].qty+=q:cart[id]={...p,qty:q};
+// CARRINHO
+function addToCart(id) {
+  const p = productsData.find(x => x.id === id);
+  const q = parseInt(document.getElementById("q-" + id).value);
+  cart[id] ? cart[id].qty += q : cart[id] = { ...p, qty: q };
   updateCart();
 }
 
-function updateCart(){
-  const ul=document.getElementById("cartItems");
-  ul.innerHTML="";
-  let subtotal=0;
+function updateCart() {
+  const ul = document.getElementById("cartItems");
+  ul.innerHTML = "";
+  let subtotal = 0;
 
-  Object.values(cart).forEach(i=>{
-    subtotal+=i.price*i.qty;
-    const li=document.createElement("li");
-    li.innerHTML=`${i.name} (${i.qty}x)
-      <button onclick="removeItem(${i.id})">🗑️</button>`;
+  Object.values(cart).forEach(i => {
+    subtotal += i.price * i.qty;
+    const li = document.createElement("li");
+    li.innerHTML = `${i.name} (${i.qty}x) <button onclick="removeItem(${i.id})">🗑️</button>`;
     ul.appendChild(li);
   });
 
-  const rate=subtotal>=150000?0.10:0.15;
-  document.getElementById("subtotal").innerText=subtotal.toLocaleString("pt-BR");
-  document.getElementById("tax").innerText=(subtotal*rate).toLocaleString("pt-BR");
-  document.getElementById("total").innerText=(subtotal*(1+rate)).toLocaleString("pt-BR");
-  document.getElementById("taxPercent").innerText=(rate*100)+"%";
+  const rate = subtotal >= 150000 ? 0.10 : 0.15;
+  document.getElementById("subtotal").innerText = subtotal.toLocaleString("pt-BR");
+  document.getElementById("tax").innerText = (subtotal * rate).toLocaleString("pt-BR");
+  document.getElementById("total").innerText = (subtotal * (1 + rate)).toLocaleString("pt-BR");
+  document.getElementById("taxPercent").innerText = (rate * 100) + "%";
 }
 
-function removeItem(id){
+function removeItem(id) {
   delete cart[id];
   updateCart();
 }
 
-function finalizarCompra(){
-  if(Object.keys(cart).length===0){
+// FINALIZAR
+function finalizarCompra() {
+  if (Object.keys(cart).length === 0) {
     alert("Adicione produtos ao carrinho");
     return;
   }
 
   const resumo = Object.values(cart)
-    .map(i=>`${i.name} (${i.qty}x)`)
+    .map(i => `${i.name} (${i.qty}x)`)
     .join(", ");
 
-  // 🔴 COLE AQUI O LINK DO GOOGLE FORMS
-  const formBase = "https://docs.google.com/forms/d/e/1FAIpQLSd9A2GujhNfiwqwT-hQSiVuE7k1obWRfQexdSaIBndspmmjcA/viewform?usp=pp_url&entry.1279682989=Pedido:";
+  const formBase =
+    "https://docs.google.com/forms/d/e/1FAIpQLSd9A2GujhNfiwqwT-hQSiVuE7k1obWRfQexdSaIBndspmmjcA/viewform?usp=pp_url&entry.1279682989=Pedido:";
 
   window.open(formBase + encodeURIComponent(resumo), "_blank");
 }
-
 </script>
 
 </body>
