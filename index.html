@@ -6,9 +6,7 @@
 <title>Catálogo On Company</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box;}
 
 body{
   margin:0;
@@ -18,23 +16,14 @@ body{
   overflow-x:hidden;
 }
 
-h1{
-  text-align:center;
-  margin:20px 0 5px;
-}
-
-.subtitle{
-  text-align:center;
-  color:#777;
-  margin-bottom:20px;
-  font-size:14px;
-}
+h1{text-align:center;margin:16px 0 4px;}
+.subtitle{text-align:center;color:#777;margin-bottom:16px;font-size:13px;}
 
 .menu{
   display:flex;
   justify-content:center;
-  gap:15px;
-  margin-bottom:20px;
+  gap:12px;
+  margin-bottom:16px;
   flex-wrap:wrap;
 }
 
@@ -44,17 +33,17 @@ h1{
   font-weight:bold;
   cursor:pointer;
   color:#555;
-  font-size:14px;
+  font-size:13px;
 }
 
-/* 🔹 LAYOUT PRINCIPAL */
+/* 🔹 LAYOUT */
 .container{
   display:flex;
-  gap:24px;
-  padding:24px;
-  align-items:flex-start;
+  gap:16px;
+  padding:16px;
   max-width:1400px;
   margin:0 auto;
+  align-items:flex-start;
 }
 
 /* 🔹 PRODUTOS */
@@ -62,126 +51,115 @@ h1{
   flex:1;
   display:grid;
   grid-template-columns:repeat(3, 1fr);
-  gap:24px;
+  gap:16px;
 }
 
 .card{
   background:#fff;
-  border-radius:16px;
-  padding:14px;
-  box-shadow:0 8px 18px rgba(0,0,0,.06);
+  border-radius:14px;
+  padding:10px;
+  box-shadow:0 6px 16px rgba(0,0,0,.06);
 }
 
 .card-image{
   width:100%;
-  height:150px;
-  border-radius:12px;
-  margin-bottom:10px;
+  height:120px;
+  border-radius:10px;
   background:#eee;
   background-size:cover;
   background-position:center;
+  margin-bottom:8px;
 }
 
 .card h3{
-  font-size:14px;
-  margin:6px 0 4px;
+  font-size:13px;
+  margin:4px 0;
 }
 
 .card strong{
-  font-size:13px;
+  font-size:12px;
 }
 
 /* 🔹 CONTROLES */
 .controls{
   display:flex;
-  gap:8px;
-  margin-top:10px;
+  gap:6px;
+  margin-top:6px;
 }
 
 .controls input{
-  width:52px;
-  padding:5px;
+  width:46px;
+  padding:4px;
+  font-size:12px;
 }
 
 .controls button{
   flex:1;
   background:#cbb69c;
   border:none;
-  border-radius:10px;
+  border-radius:8px;
   color:#fff;
-  padding:7px;
+  padding:6px;
+  font-size:12px;
   cursor:pointer;
-  font-size:13px;
 }
 
 /* 🔹 CARRINHO */
 .cart{
-  width:320px;
-  min-width:320px;
+  width:260px;
+  min-width:260px;
   background:#fff;
-  border-radius:20px;
-  padding:20px;
-  box-shadow:0 12px 28px rgba(0,0,0,.10);
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 10px 24px rgba(0,0,0,.1);
   position:sticky;
-  top:20px;
+  top:16px;
 }
 
 .cart h2{
-  font-size:18px;
+  font-size:16px;
   margin-top:0;
 }
 
 .cart ul{
   list-style:none;
   padding:0;
-  margin:12px 0;
+  margin:10px 0;
 }
 
 .cart li{
-  font-size:13px;
-  margin-bottom:6px;
+  font-size:12px;
+  margin-bottom:4px;
 }
 
 .finalizar{
-  margin-top:15px;
+  margin-top:12px;
   width:100%;
-  padding:12px;
+  padding:10px;
   border:none;
-  border-radius:12px;
+  border-radius:10px;
   background:#cbb69c;
   color:#fff;
-  font-size:15px;
+  font-size:14px;
   cursor:pointer;
 }
 
 .info{
-  font-size:12px;
+  font-size:11px;
   color:#666;
-  margin-top:14px;
+  margin-top:10px;
   line-height:1.4;
 }
 
-/* 📱 RESPONSIVO */
-@media (max-width: 1100px){
-  .products{
-    grid-template-columns:repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 800px){
-  .container{
-    flex-direction:column;
-  }
-
+/* 📱 AJUSTE MOBILE */
+@media (max-width: 768px){
   .products{
     grid-template-columns:repeat(2, 1fr);
   }
 
   .cart{
-    width:100%;
-    min-width:auto;
-    position:relative;
-    top:auto;
+    width:220px;
+    min-width:220px;
   }
 }
 </style>
@@ -195,7 +173,6 @@ h1{
 <div class="menu" id="menuCategorias"></div>
 
 <div class="container">
-
   <div class="products" id="products"></div>
 
   <div class="cart">
@@ -209,27 +186,20 @@ h1{
     <button class="finalizar" onclick="finalizarCompra()">Finalizar compra</button>
 
     <div class="info">
-      • Taxa: 15% abaixo de 150.000 Kz<br>
-      • 10% acima desse valor<br>
+      • Taxa: 15% até 150.000 Kz<br>
+      • 10% acima<br>
       • Alfândega: 30%<br>
       • Peso: 16.000 Kz/kg
     </div>
   </div>
-
 </div>
 
 <script>
-let productsData=[];
-let currentCategory="Todos";
-const cart={};
-
-const productsDiv=document.getElementById("products");
-const menu=document.getElementById("menuCategorias");
+let productsData=[],currentCategory="Todos",cart={};
+const productsDiv=document.getElementById("products"),menu=document.getElementById("menuCategorias");
 
 function carregarProdutos(data){
-  productsData=data;
-  criarCategorias();
-  render();
+  productsData=data;criarCategorias();render();
 }
 
 const api=document.createElement("script");
@@ -238,64 +208,56 @@ document.body.appendChild(api);
 
 function criarCategorias(){
   menu.innerHTML="";
-  const cats=["Todos",...new Set(productsData.map(p=>p.category))];
-  cats.forEach(c=>{
+  ["Todos",...new Set(productsData.map(p=>p.category))].forEach(c=>{
     const b=document.createElement("button");
-    b.innerText=c;
-    b.onclick=()=>{currentCategory=c;render()};
-    menu.appendChild(b);
+    b.innerText=c;b.onclick=()=>{currentCategory=c;render()};menu.appendChild(b);
   });
 }
 
 function render(){
   productsDiv.innerHTML="";
-  productsData
-    .filter(p=>currentCategory==="Todos"||p.category===currentCategory)
-    .forEach(p=>{
-      const card=document.createElement("div");
-      card.className="card";
-      card.innerHTML=`
-        <div class="card-image" style="background-image:url('${p.image||""}')"></div>
-        <h3>${p.name}</h3>
-        <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
-        <div class="controls">
-          <input type="number" min="1" value="1" id="q-${p.id}">
-          <button onclick="addToCart(${p.id})">Adicionar</button>
-        </div>`;
-      productsDiv.appendChild(card);
-    });
+  productsData.filter(p=>currentCategory==="Todos"||p.category===currentCategory)
+  .forEach(p=>{
+    const card=document.createElement("div");
+    card.className="card";
+    card.innerHTML=`
+      <div class="card-image" style="background-image:url('${p.image||""}')"></div>
+      <h3>${p.name}</h3>
+      <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
+      <div class="controls">
+        <input type="number" min="1" value="1" id="q-${p.id}">
+        <button onclick="addToCart(${p.id})">Adicionar</button>
+      </div>`;
+    productsDiv.appendChild(card);
+  });
 }
 
 function addToCart(id){
   const p=productsData.find(x=>x.id===id);
   const q=parseInt(document.getElementById("q-"+id).value);
-  cart[id]?cart[id].qty+=q:cart[id]={...p,qty:q};
-  updateCart();
+  cart[id]?cart[id].qty+=q:cart[id]={...p,qty:q};updateCart();
 }
 
 function updateCart(){
-  const ul=document.getElementById("cartItems");
-  ul.innerHTML="";
+  const ul=document.getElementById("cartItems");ul.innerHTML="";
   let subtotal=0;
   Object.values(cart).forEach(i=>{
     subtotal+=i.price*i.qty;
     const li=document.createElement("li");
-    li.innerText=`${i.name} (${i.qty}x)`;
-    ul.appendChild(li);
+    li.innerText=`${i.name} (${i.qty}x)`;ul.appendChild(li);
   });
   const rate=subtotal>=150000?0.10:0.15;
-  document.getElementById("subtotal").innerText=subtotal.toLocaleString("pt-BR");
-  document.getElementById("tax").innerText=(subtotal*rate).toLocaleString("pt-BR");
-  document.getElementById("total").innerText=(subtotal*(1+rate)).toLocaleString("pt-BR");
-  document.getElementById("taxPercent").innerText=(rate*100)+"%";
+  subtotalEl.textContent=subtotal.toLocaleString("pt-BR");
+  tax.textContent=(subtotal*rate).toLocaleString("pt-BR");
+  total.textContent=(subtotal*(1+rate)).toLocaleString("pt-BR");
+  taxPercent.textContent=(rate*100)+"%";
 }
 
 function finalizarCompra(){
   if(!Object.keys(cart).length){alert("Adicione produtos");return;}
   const resumo=Object.values(cart).map(i=>`${i.name} (${i.qty}x)`).join(", ");
   window.open(
-    "https://docs.google.com/forms/d/e/1FAIpQLSd9A2GujhNfiwqwT-hQSiVuE7k1obWRfQexdSaIBndspmmjcA/viewform?usp=pp_url&entry.1279682989="
-    + encodeURIComponent(resumo),
+    "https://docs.google.com/forms/d/e/1FAIpQLSd9A2GujhNfiwqwT-hQSiVuE7k1obWRfQexdSaIBndspmmjcA/viewform?usp=pp_url&entry.1279682989="+encodeURIComponent(resumo),
     "_blank"
   );
 }
