@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Catálogo On Company</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:linear-gradient(180deg,#fdf9f4,#f5efe8);
+  color:#333;
+}
+
+h1{text-align:center;margin-top:40px;}
+.subtitle{text-align:center;color:#777;margin-bottom:30px;}
+
+.menu{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  margin-bottom:30px;
+}
+
+.menu button{
+  background:none;
+  border:none;
+  font-weight:bold;
+  cursor:pointer;
+  color:#555;
+  font-size:15px;
+}
+
+.container{
+  display:flex;
+  gap:40px;
+  padding:40px;
+}
+
+.products{
+  flex:3;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:30px;
+}
+
+.card{
+  background:#fff;
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 10px 25px rgba(0,0,0,.05);
+}
+
+.card img{
+  width:100%;
+  border-radius:12px;
+}
+
+.controls{
+  display:flex;
+  gap:12px;
+  margin-top:10px;
+}
+
+.controls input{
+  width:60px;
+  padding:6px;
+}
+
+.controls button{
+  flex:1;
+  background:#cbb69c;
+  border:none;
+  border-radius:10px;
+  color:#fff;
+  padding:10px;
+  cursor:pointer;
+}
+
+.cart{
+  flex:1;
+  background:#fff;
+  border-radius:16px;
+  padding:24px;
+  box-shadow:0 10px 25px rgba(0,0,0,.08);
+  position:sticky;
+  top:20px;
+}
+
+.cart ul{
+  padding-left:0;
+  list-style:none;
+}
+
+.cart li{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:6px;
+}
+
+.finalizar{
+  margin-top:20px;
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:#cbb69c;
+  color:#fff;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.info{
+  font-size:13px;
+  color:#666;
+  margin-top:15px;
+  line-height:1.5;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Catálogo On Company</h1>
+<p class="subtitle">Escolha seus produtos, acompanhe o valor e finalize com segurança</p>
+
+<div class="menu" id="menuCategorias"></div>
+
+<div class="container">
+  <div class="products" id="products"></div>
+
+  <div class="cart">
+    <h2>Seu carrinho</h2>
+    <ul id="cartItems"></ul>
+
+    <p>Subtotal: <strong><span id="subtotal">0</span> Kz</strong></p>
+    <p>Taxa de serviço (<span id="taxPercent">15%</span>): <strong><span id="tax">0</span> Kz</strong></p>
+    <p>Total estimado: <strong><span id="total">0</span> Kz</strong></p>
+
+    <button class="finalizar" onclick="finalizarCompra()">Finalizar compra</button>
+
+    <div class="info">
+      <strong>Informações importantes:</strong><br>
+      • Taxa de serviço: 15% abaixo de 150.000 Kz e 10% acima.<br>
+      • Taxa alfandegária: 30% (paga na retirada).<br>
+      • Peso: 16.000 Kz por kg (informado antes do envio).
+    </div>
+  </div>
+</div>
+
+<script>
+let productsData = [];
+let currentCategory = "Todos";
+const cart = {};
+
+const productsDiv = document.getElementById("products");
+const menu = document.getElementById("menuCategorias");
+
+function carregarProdutos(data){
+  productsData = data;
+  initCategorias();
+  render();
+}
+
+const api = document.createElement("script");
+api.src = "https://script.google.com/macros/s/AKfycby1DmSxjzotQVnEiCKHoYtqW6tkWqkAVedpRz25DzE/exec";
+document.body.appendChild(api);
+
+function initCategorias(){
+  menu.innerHTML = "";
+  const categorias = ["Todos", ...new Set(productsData.map(p => p.category))];
+  categorias.forEach(c => {
+    const b = document.createElement("button");
+    b.innerText = c;
+    b.onclick = () => { currentCategory = c; render(); };
+    menu.appendChild(b);
+  });
+}
+
+function render(){
+  productsDiv.innerHTML = "";
+  productsData
+    .filter(p => currentCategory === "Todos" || p.category === currentCategory)
+    .forEach(p => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <img src="${p.image}">
+        <h3>${p.name}</h3>
+        <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
+        <div class="controls">
+          <input type="number" min="1" value="1" id="q-${p.id}">
+          <button onclick="addToCart(${p.id})">Adicionar</button>
+        </div>
+      `;
+      productsDiv.appendChild(card);
+    });
+}
+
+function addToCart(id){
+  const p = productsData.find(x => x.id === id);
+  const q = parseInt(document.getElementById("q-"+id).value);
+  cart[id] ? cart[id].qty += q : cart[id] = {...p, qty:q};
+  updateCart();
+}
+
+function updateCart(){
+  const ul = document.getElementById("cartItems");
+  ul.innerHTML = "";
+  let subtotal = 0;
+
+  Object.values(cart).forEach(i => {
+    subtotal += i.price * i.qty;
+    const li = document.createElement("li");
+    li.innerHTML = `${i.name} (${i.qty}x)`;
+    ul.appendChild(li);
+  });
+
+  const rate = subtotal >= 150000 ? 0.10 : 0.15;
+  document.getElementById("subtotal").innerText = subtotal.toLocaleString("pt-BR");
+  document.getElementById("tax").innerText = (subtotal * rate).toLocaleString("pt-BR");
+  document.getElementById("total").innerText = (subtotal * (1+rate)).toLocaleString("pt-BR");
+  document.getElementById("taxPercent").innerText = (rate*100)+"%";
+}
+
+function finalizarCompra(){
+  if(Object.keys(cart).length === 0){
+    alert("Adicione produtos ao carrinho");
+    return;
+  }
+
+  const resumo = Object.values(cart).map(i => `${i.name} (${i.qty}x)`).join(", ");
+
+  const form =
+    "https://docs.google.com/forms/d/e/1FAIpQLSd9A2GujhNfiwqwT-hQSiVuE7k1obWRfQexdSaIBndspmmjcA/viewform?usp=pp_url&entry.1279682989=";
+
+  window.open(form + encodeURIComponent(resumo), "_blank");
+}
+</script>
+
+</body>
+</html>
