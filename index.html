@@ -36,131 +36,154 @@ h1{text-align:center;margin:16px 0 4px;}
   font-size:13px;
 }
 
-/* 🔹 LAYOUT */
+/* ===== LAYOUT ===== */
 .container{
   display:flex;
-  gap:16px;
-  padding:16px;
+  gap:24px;
+  padding:24px;
   max-width:1400px;
   margin:0 auto;
   align-items:flex-start;
 }
 
-/* 🔹 PRODUTOS */
 .products{
   flex:1;
   display:grid;
-  grid-template-columns:repeat(3, 1fr);
-  gap:16px;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
 }
 
 .card{
   background:#fff;
-  border-radius:14px;
-  padding:10px;
-  box-shadow:0 6px 16px rgba(0,0,0,.06);
+  border-radius:16px;
+  padding:12px;
+  box-shadow:0 8px 18px rgba(0,0,0,.06);
 }
 
 .card-image{
   width:100%;
-  height:120px;
-  border-radius:10px;
+  height:140px;
+  border-radius:12px;
   background:#eee;
   background-size:cover;
   background-position:center;
   margin-bottom:8px;
 }
 
-.card h3{
-  font-size:13px;
-  margin:4px 0;
-}
+.card h3{font-size:14px;margin:6px 0 4px;}
+.card strong{font-size:13px;}
 
-.card strong{
-  font-size:12px;
-}
-
-/* 🔹 CONTROLES */
 .controls{
   display:flex;
-  gap:6px;
-  margin-top:6px;
+  gap:8px;
+  margin-top:8px;
 }
 
 .controls input{
-  width:46px;
+  width:50px;
   padding:4px;
-  font-size:12px;
 }
 
 .controls button{
   flex:1;
   background:#cbb69c;
   border:none;
-  border-radius:8px;
+  border-radius:10px;
   color:#fff;
   padding:6px;
-  font-size:12px;
+  font-size:13px;
   cursor:pointer;
 }
 
-/* 🔹 CARRINHO */
+/* ===== CARRINHO DESKTOP ===== */
 .cart{
-  width:260px;
-  min-width:260px;
+  width:320px;
   background:#fff;
-  border-radius:18px;
-  padding:16px;
-  box-shadow:0 10px 24px rgba(0,0,0,.1);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 12px 28px rgba(0,0,0,.10);
   position:sticky;
-  top:16px;
+  top:20px;
 }
 
-.cart h2{
-  font-size:16px;
-  margin-top:0;
-}
-
-.cart ul{
-  list-style:none;
-  padding:0;
-  margin:10px 0;
-}
-
-.cart li{
-  font-size:12px;
-  margin-bottom:4px;
-}
+.cart h2{margin-top:0;}
+.cart ul{list-style:none;padding:0;}
+.cart li{font-size:13px;margin-bottom:6px;}
 
 .finalizar{
   margin-top:12px;
   width:100%;
-  padding:10px;
+  padding:12px;
   border:none;
-  border-radius:10px;
+  border-radius:12px;
   background:#cbb69c;
   color:#fff;
-  font-size:14px;
+  font-size:15px;
   cursor:pointer;
 }
 
-.info{
-  font-size:11px;
-  color:#666;
-  margin-top:10px;
-  line-height:1.4;
+/* ===== MOBILE ===== */
+@media (max-width: 900px){
+  .products{grid-template-columns:repeat(2,1fr);}
+  .cart{display:none;}
 }
 
-/* 📱 AJUSTE MOBILE */
-@media (max-width: 768px){
-  .products{
-    grid-template-columns:repeat(2, 1fr);
-  }
+/* ===== BOLHA FLUTUANTE ===== */
+.floating-cart{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  width:60px;
+  height:60px;
+  background:#cbb69c;
+  border-radius:50%;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-size:26px;
+  cursor:grab;
+  z-index:999;
+}
 
-  .cart{
-    width:220px;
-    min-width:220px;
-  }
+.floating-cart span{
+  position:absolute;
+  top:-6px;
+  right:-6px;
+  background:#ff4d4d;
+  color:#fff;
+  border-radius:50%;
+  width:22px;
+  height:22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+}
+
+/* ===== MODAL CARRINHO MOBILE ===== */
+.cart-modal{
+  position:fixed;
+  top:0;
+  right:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,.4);
+  display:none;
+  z-index:998;
+}
+
+.cart-mobile{
+  position:absolute;
+  right:0;
+  top:0;
+  width:85%;
+  max-width:360px;
+  height:100%;
+  background:#fff;
+  padding:20px;
+  border-radius:20px 0 0 20px;
+  overflow:auto;
 }
 </style>
 </head>
@@ -168,7 +191,7 @@ h1{text-align:center;margin:16px 0 4px;}
 <body>
 
 <h1>Catálogo On Company</h1>
-<p class="subtitle">Escolha seus produtos, acompanhe o valor e finalize com segurança</p>
+<p class="subtitle">Escolha seus produtos e finalize com segurança</p>
 
 <div class="menu" id="menuCategorias"></div>
 
@@ -178,28 +201,35 @@ h1{text-align:center;margin:16px 0 4px;}
   <div class="cart">
     <h2>Seu carrinho</h2>
     <ul id="cartItems"></ul>
-
-    <p>Subtotal: <strong><span id="subtotal">0</span> Kz</strong></p>
-    <p>Taxa (<span id="taxPercent">15%</span>): <strong><span id="tax">0</span> Kz</strong></p>
     <p>Total: <strong><span id="total">0</span> Kz</strong></p>
-
     <button class="finalizar" onclick="finalizarCompra()">Finalizar compra</button>
+  </div>
+</div>
 
-    <div class="info">
-      • Taxa: 15% até 150.000 Kz<br>
-      • 10% acima<br>
-      • Alfândega: 30%<br>
-      • Peso: 16.000 Kz/kg
-    </div>
+<!-- 🔵 BOLHA -->
+<div class="floating-cart" id="floatingCart">
+  🛒
+  <span id="cartCount">0</span>
+</div>
+
+<!-- 📱 MODAL -->
+<div class="cart-modal" id="cartModal">
+  <div class="cart-mobile">
+    <h2>Seu carrinho</h2>
+    <ul id="cartItemsMobile"></ul>
+    <p>Total: <strong><span id="totalMobile">0</span> Kz</strong></p>
+    <button class="finalizar" onclick="finalizarCompra()">Finalizar compra</button>
+    <button class="finalizar" style="background:#999" onclick="fecharCarrinho()">Continuar comprando</button>
   </div>
 </div>
 
 <script>
-let productsData=[],currentCategory="Todos",cart={};
-const productsDiv=document.getElementById("products"),menu=document.getElementById("menuCategorias");
+let productsData=[], cart={};
 
 function carregarProdutos(data){
-  productsData=data;criarCategorias();render();
+  productsData=data;
+  criarCategorias();
+  render();
 }
 
 const api=document.createElement("script");
@@ -207,20 +237,24 @@ api.src="https://script.google.com/macros/s/AKfycbyhm76e4cB0aKRu85ndNfQmiFY8fiUD
 document.body.appendChild(api);
 
 function criarCategorias(){
+  const menu=document.getElementById("menuCategorias");
   menu.innerHTML="";
   ["Todos",...new Set(productsData.map(p=>p.category))].forEach(c=>{
     const b=document.createElement("button");
-    b.innerText=c;b.onclick=()=>{currentCategory=c;render()};menu.appendChild(b);
+    b.innerText=c;
+    b.onclick=()=>render(c);
+    menu.appendChild(b);
   });
 }
 
-function render(){
-  productsDiv.innerHTML="";
-  productsData.filter(p=>currentCategory==="Todos"||p.category===currentCategory)
+function render(cat="Todos"){
+  const pDiv=document.getElementById("products");
+  pDiv.innerHTML="";
+  productsData.filter(p=>cat==="Todos"||p.category===cat)
   .forEach(p=>{
-    const card=document.createElement("div");
-    card.className="card";
-    card.innerHTML=`
+    const d=document.createElement("div");
+    d.className="card";
+    d.innerHTML=`
       <div class="card-image" style="background-image:url('${p.image||""}')"></div>
       <h3>${p.name}</h3>
       <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
@@ -228,39 +262,50 @@ function render(){
         <input type="number" min="1" value="1" id="q-${p.id}">
         <button onclick="addToCart(${p.id})">Adicionar</button>
       </div>`;
-    productsDiv.appendChild(card);
+    pDiv.appendChild(d);
   });
 }
 
 function addToCart(id){
   const p=productsData.find(x=>x.id===id);
   const q=parseInt(document.getElementById("q-"+id).value);
-  cart[id]?cart[id].qty+=q:cart[id]={...p,qty:q};updateCart();
+  cart[id]?cart[id].qty+=q:cart[id]={...p,qty:q};
+  updateCart();
 }
 
 function updateCart(){
-  const ul=document.getElementById("cartItems");ul.innerHTML="";
-  let subtotal=0;
-  Object.values(cart).forEach(i=>{
-    subtotal+=i.price*i.qty;
-    const li=document.createElement("li");
-    li.innerText=`${i.name} (${i.qty}x)`;ul.appendChild(li);
-  });
-  const rate=subtotal>=150000?0.10:0.15;
-  subtotalEl.textContent=subtotal.toLocaleString("pt-BR");
-  tax.textContent=(subtotal*rate).toLocaleString("pt-BR");
-  total.textContent=(subtotal*(1+rate)).toLocaleString("pt-BR");
-  taxPercent.textContent=(rate*100)+"%";
+  const items=Object.values(cart);
+  const total=items.reduce((s,i)=>s+i.price*i.qty,0);
+
+  document.getElementById("cartItems").innerHTML=
+  document.getElementById("cartItemsMobile").innerHTML=
+    items.map(i=>`<li>${i.name} (${i.qty}x)</li>`).join("");
+
+  document.getElementById("total").innerText=
+  document.getElementById("totalMobile").innerText=
+    total.toLocaleString("pt-BR");
+
+  document.getElementById("cartCount").innerText=
+    items.reduce((s,i)=>s+i.qty,0);
+
+  document.getElementById("floatingCart").style.display="flex";
 }
 
 function finalizarCompra(){
-  if(!Object.keys(cart).length){alert("Adicione produtos");return;}
   const resumo=Object.values(cart).map(i=>`${i.name} (${i.qty}x)`).join(", ");
   window.open(
     "https://docs.google.com/forms/d/e/1FAIpQLSd9A2GujhNfiwqwT-hQSiVuE7k1obWRfQexdSaIBndspmmjcA/viewform?usp=pp_url&entry.1279682989="+encodeURIComponent(resumo),
     "_blank"
   );
 }
+
+function fecharCarrinho(){
+  document.getElementById("cartModal").style.display="none";
+}
+
+document.getElementById("floatingCart").onclick=()=>{
+  document.getElementById("cartModal").style.display="block";
+};
 </script>
 
 </body>
