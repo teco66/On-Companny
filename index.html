@@ -222,106 +222,122 @@ h1{text-align:center;margin:16px 0 4px;}
 </div>
 
 <script>
-let productsData=[], cart={};
+let productsData = [], cart = {};
 
 function carregarProdutos(data){
-  productsData=data;
+  productsData = data;
   criarCategorias();
   render();
 }
 
-const api=document.createElement("script");
-api.src="https://script.google.com/macros/s/AKfycbyhm76e4cB0aKRu85ndNfQmiFY8fiUD-2pHfIGgH6FVEPsTA03QOnVnI4bxI2iSPtk9/exec?callback=carregarProdutos";
+/* 🔒 cache bust para Apps Script */
+const api = document.createElement("script");
+api.src =
+  "https://script.google.com/macros/s/AKfycbyhm76e4cB0aKRu85ndNfQmiFY8fiUD-2pHfIGgH6FVEPsTA03QOnVnI4bxI2iSPtk9/exec" +
+  "?callback=carregarProdutos&v=" + Date.now();
 document.body.appendChild(api);
 
 function criarCategorias(){
-  const menu=document.getElementById("menuCategorias");
-  menu.innerHTML="";
-  ["Todos",...new Set(productsData.map(p=>p.categoria))].forEach(c=>{
-    const b=document.createElement("button");
-    b.innerText=c;
-    b.onclick=()=>render(c);
+  const menu = document.getElementById("menuCategorias");
+  menu.innerHTML = "";
+
+  const categorias = [
+    "Todos",
+    ...new Set(
+      productsData
+        .map(p => p.categoria)
+        .filter(c => c && c.trim() !== "")
+    )
+  ];
+
+  categorias.forEach(c => {
+    const b = document.createElement("button");
+    b.innerText = c;
+    b.onclick = () => render(c);
     menu.appendChild(b);
   });
 }
 
-function render(cat="Todos"){
-  const pDiv=document.getElementById("products");
-  pDiv.innerHTML="";
-  productsData.filter(p=>cat==="Todos"||p.categoria===cat)
-  .forEach(p=>{
-    const d=document.createElement("div");
-    d.className="card";
-    d.innerHTML=`
-      <div class="card-image" style="background-image:url('${p.imagem || ""}')"></div>
-      <h3>${p.name}</h3>
-      <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
-      <div class="controls">
-        <input type="number" min="1" value="1" id="q-${p.id}">
-        <button onclick="addToCart(${p.id})">Adicionar</button>
-      </div>`;
-    pDiv.appendChild(d);
-  });
+function render(cat = "Todos"){
+  const pDiv = document.getElementById("products");
+  pDiv.innerHTML = "";
+
+  productsData
+    .filter(p => cat === "Todos" || p.categoria === cat)
+    .forEach(p => {
+      const d = document.createElement("div");
+      d.className = "card";
+      d.innerHTML = `
+        <div class="card-image" style="background-image:url('${p.imagem || ""}')"></div>
+        <h3>${p.name}</h3>
+        <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
+        <div class="controls">
+          <input type="number" min="1" value="1" id="q-${p.id}">
+          <button onclick="addToCart(${p.id})">Adicionar</button>
+        </div>`;
+      pDiv.appendChild(d);
+    });
 }
 
 function addToCart(id){
-  const p=productsData.find(x=>x.id===id);
-  const q=parseInt(document.getElementById("q-"+id).value);
-  cart[id]?cart[id].qty+=q:cart[id]={...p,qty:q};
+  const p = productsData.find(x => x.id === id);
+  const q = parseInt(document.getElementById("q-" + id).value);
+  cart[id] ? cart[id].qty += q : cart[id] = { ...p, qty: q };
   updateCart();
 }
 
 function updateCart(){
-  const items=Object.values(cart);
-  const subtotal=items.reduce((s,i)=>s+i.price*i.qty,0);
-  const rate=subtotal>=150000?0.10:0.15;
-  const tax=subtotal*rate;
-  const total=subtotal+tax;
+  const items = Object.values(cart);
+  const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
+  const rate = subtotal >= 150000 ? 0.10 : 0.15;
+  const tax = subtotal * rate;
+  const total = subtotal + tax;
 
-  document.getElementById("cartItems").innerHTML=
-  document.getElementById("cartItemsMobile").innerHTML=
-    items.map(i=>`<li>${i.name} (${i.qty}x)</li>`).join("");
+  document.getElementById("cartItems").innerHTML =
+  document.getElementById("cartItemsMobile").innerHTML =
+    items.map(i => `<li>${i.name} (${i.qty}x)</li>`).join("");
 
-  document.getElementById("subtotal").innerText=
-  document.getElementById("subtotalMobile").innerText=
+  document.getElementById("subtotal").innerText =
+  document.getElementById("subtotalMobile").innerText =
     subtotal.toLocaleString("pt-BR");
 
-  document.getElementById("tax").innerText=
-  document.getElementById("taxMobile").innerText=
+  document.getElementById("tax").innerText =
+  document.getElementById("taxMobile").innerText =
     tax.toLocaleString("pt-BR");
 
-  document.getElementById("total").innerText=
-  document.getElementById("totalMobile").innerText=
+  document.getElementById("total").innerText =
+  document.getElementById("totalMobile").innerText =
     total.toLocaleString("pt-BR");
 
-  document.getElementById("taxPercent").innerText=
-  document.getElementById("taxPercentMobile").innerText=
-    (rate*100)+"%";
+  document.getElementById("taxPercent").innerText =
+  document.getElementById("taxPercentMobile").innerText =
+    (rate * 100) + "%";
 
-  document.getElementById("cartCount").innerText=
-    items.reduce((s,i)=>s+i.qty,0);
+  document.getElementById("cartCount").innerText =
+    items.reduce((s, i) => s + i.qty, 0);
 
-  document.getElementById("floatingCart").style.display="flex";
+  document.getElementById("floatingCart").style.display = "flex";
 }
 
 function finalizarCompra(){
-  const resumo=Object.values(cart).map(i=>`${i.name} (${i.qty}x)`).join(", ");
+  const resumo = Object.values(cart)
+    .map(i => `${i.name} (${i.qty}x)`)
+    .join(", ");
   window.open(
-    "https://docs.google.com/forms/d/e/1FAIpQLSd9A2GujhNfiwqwT-hQSiVuE7k1obWRfQexdSaIBndspmmjcA/viewform?usp=pp_url&entry.1279682989="+encodeURIComponent(resumo),
+    "https://docs.google.com/forms/d/e/1FAIpQLSd9A2GujhNfiwqwT-hQSiVuE7k1obWRfQexdSaIBndspmmjcA/viewform?usp=pp_url&entry.1279682989=" +
+      encodeURIComponent(resumo),
     "_blank"
   );
 }
 
 function fecharCarrinho(){
-  document.getElementById("cartModal").style.display="none";
+  document.getElementById("cartModal").style.display = "none";
 }
 
-document.getElementById("floatingCart").onclick=()=>{
-  document.getElementById("cartModal").style.display="block";
+document.getElementById("floatingCart").onclick = () => {
+  document.getElementById("cartModal").style.display = "block";
 };
 </script>
 
 </body>
 </html>
-
-
