@@ -257,19 +257,21 @@ function render(cat="Todos"){
   const pDiv=document.getElementById("products");
   pDiv.innerHTML="";
   productsData.filter(p=>cat==="Todos"||getCategoria(p)===cat)
-  .forEach(p=>{
-    const d=document.createElement("div");
-    d.className="card";
-    d.innerHTML=`
-      <div class="card-image" style="background-image:url('${getImagem(p)}')"></div>
-      <h3>${p.name}</h3>
-      <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
-      <div class="controls">
-        <input type="number" min="1" value="1" id="q-${String(p.id)}">
-        <button onclick="addToCart('${p.id}')">Adicionar</button>
-      </div>`;
-    pDiv.appendChild(d);
-  });
+  .forEach((p, index)=>{
+  const safeId = p.id ? String(p.id) : "AUTO_" + index;
+
+  const d = document.createElement("div");
+  d.className = "card";
+  d.innerHTML = `
+    <div class="card-image" style="background-image:url('${getImagem(p)}')"></div>
+    <h3>${p.name}</h3>
+    <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
+    <div class="controls">
+      <input type="number" min="1" value="1" id="q-${safeId}">
+      <button onclick="addToCart('${safeId}')">Adicionar</button>
+    </div>`;
+  pDiv.appendChild(d);
+});
 }
 
 function addToCart(id){
@@ -320,5 +322,6 @@ floatingCart.onclick=()=>cartModal.style.display="block";
 
 </body>
 </html>
+
 
 
