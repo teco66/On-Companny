@@ -266,7 +266,7 @@ function render(cat="Todos"){
       <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
       <div class="controls">
         <input type="number" min="1" value="1" id="q-${p.id}">
-        <button onclick="addToCart(${p.id})">Adicionar</button>
+        <button onclick="addToCart('${p.id}')">Adicionar</button>
       </div>`;
     pDiv.appendChild(d);
   });
@@ -320,3 +320,4 @@ floatingCart.onclick=()=>cartModal.style.display="block";
 
 </body>
 </html>
+
