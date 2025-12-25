@@ -41,15 +41,19 @@ h1{text-align:center;margin:16px 0 4px;}
   padding:12px;
   box-shadow:0 8px 18px rgba(0,0,0,.06);
 }
+
+/* ✅ AJUSTE DEFINITIVO DA IMAGEM (DESKTOP + MOBILE) */
 .card-image{
   width:100%;
-  height:140px;
+  aspect-ratio:1/1;
   border-radius:12px;
   background:#eee;
-  background-size:cover;
+  background-size:contain;      /* 🔥 NÃO CORTA */
   background-position:center;
+  background-repeat:no-repeat; /* 🔥 EVITA DUPLICAR */
   margin-bottom:8px;
 }
+
 .card h3{font-size:14px;margin:6px 0 4px;}
 .card strong{font-size:13px;}
 
@@ -172,22 +176,6 @@ h1{text-align:center;margin:16px 0 4px;}
   border-radius:20px 0 0 20px;
   overflow:auto;
 }
-
-/* 🔥 AJUSTE FINAL – LIXEIRA NO MOBILE */
-.cart-mobile ul{list-style:none;padding:0;margin:8px 0;}
-.cart-mobile li{
-  font-size:14px;
-  margin-bottom:8px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-.cart-mobile li button{
-  background:none;
-  border:none;
-  cursor:pointer;
-  font-size:18px;
-}
 </style>
 </head>
 
@@ -234,14 +222,6 @@ h1{text-align:center;margin:16px 0 4px;}
 
     <button class="finalizar" onclick="finalizarCompra()">Finalizar compra</button>
     <button class="finalizar" style="background:#999" onclick="fecharCarrinho()">Continuar comprando</button>
-
-    <div class="info">
-      • Taxa de serviço: 15% abaixo de 150.000 Kz<br>
-      • Taxa de serviço: 10% acima de 150.000 Kz<br>
-      • Taxa alfandegária: 30% (paga na retirada)<br>
-      • Custo de peso: 16.000 Kz por kg<br>
-      • Peso informado antes do envio
-    </div>
   </div>
 </div>
 
@@ -312,30 +292,17 @@ function updateCart(){
   const total=subtotal+tax;
 
   const html=items.map(i=>`
-    <li>
-      ${i.name} (${i.qty}x)
+    <li>${i.name} (${i.qty}x)
       <button onclick="removeFromCart(${i.id})">🗑</button>
     </li>`).join("");
 
-  document.getElementById("cartItems").innerHTML=html;
-  document.getElementById("cartItemsMobile").innerHTML=html;
-
-  document.getElementById("subtotal").innerText=
-  document.getElementById("subtotalMobile").innerText=subtotal.toLocaleString("pt-BR");
-
-  document.getElementById("tax").innerText=
-  document.getElementById("taxMobile").innerText=tax.toLocaleString("pt-BR");
-
-  document.getElementById("total").innerText=
-  document.getElementById("totalMobile").innerText=total.toLocaleString("pt-BR");
-
-  document.getElementById("taxPercent").innerText=
-  document.getElementById("taxPercentMobile").innerText=(rate*100)+"%";
-
-  document.getElementById("cartCount").innerText=
-    items.reduce((s,i)=>s+i.qty,0);
-
-  document.getElementById("floatingCart").style.display=items.length?"flex":"none";
+  cartItems.innerHTML=cartItemsMobile.innerHTML=html;
+  subtotal.innerText=subtotalMobile.innerText=subtotal.toLocaleString("pt-BR");
+  tax.innerText=taxMobile.innerText=tax.toLocaleString("pt-BR");
+  total.innerText=totalMobile.innerText=total.toLocaleString("pt-BR");
+  taxPercent.innerText=taxPercentMobile.innerText=(rate*100)+"%";
+  cartCount.innerText=items.reduce((s,i)=>s+i.qty,0);
+  floatingCart.style.display=items.length?"flex":"none";
 }
 
 function finalizarCompra(){
@@ -345,31 +312,11 @@ function finalizarCompra(){
     "_blank"
   );
 }
-
 function fecharCarrinho(){
-  document.getElementById("cartModal").style.display="none";
+  cartModal.style.display="none";
 }
-document.getElementById("floatingCart").onclick=()=>{
-  document.getElementById("cartModal").style.display="block";
-};
+floatingCart.onclick=()=>cartModal.style.display="block";
 </script>
 
 </body>
 </html>
-
-.product-image {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.product-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
-
