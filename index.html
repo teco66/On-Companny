@@ -300,36 +300,41 @@ function updateCart(){
       <button onclick="removeFromCart(${i.id})">🗑</button>
     </li>`).join("");
 
-  cartItems.innerHTML=cartItemsMobile.innerHTML=html;
-  subtotalEl.innerText=subtotalMobile.innerText=subtotal.toLocaleString("pt-BR");
-  taxEl.innerText=taxMobile.innerText=tax.toLocaleString("pt-BR");
-  totalEl.innerText=totalMobile.innerText=total.toLocaleString("pt-BR");
-  taxPercent.innerText=taxPercentMobile.innerText=(rate*100)+"%";
-  cartCount.innerText=items.reduce((s,i)=>s+i.qty,0);
-  floatingCart.style.display=items.length?"flex":"none";
+  document.getElementById("cartItems").innerHTML=html;
+  document.getElementById("cartItemsMobile").innerHTML=html;
+
+  document.getElementById("subtotal").innerText=
+  document.getElementById("subtotalMobile").innerText=subtotal.toLocaleString("pt-BR");
+
+  document.getElementById("tax").innerText=
+  document.getElementById("taxMobile").innerText=tax.toLocaleString("pt-BR");
+
+  document.getElementById("total").innerText=
+  document.getElementById("totalMobile").innerText=total.toLocaleString("pt-BR");
+
+  document.getElementById("taxPercent").innerText=
+  document.getElementById("taxPercentMobile").innerText=(rate*100)+"%";
+
+  document.getElementById("cartCount").innerText=
+    items.reduce((s,i)=>s+i.qty,0);
+
+  document.getElementById("floatingCart").style.display=items.length?"flex":"none";
 }
 
 function finalizarCompra(){
   const resumo=Object.values(cart).map(i=>`${i.name} (${i.qty}x)`).join(", ");
-  window.open("https://docs.google.com/forms/d/e/1FAIpQLSd9A2GujhNfiwqwT-hQSiVuE7k1obWRfQexdSaIBndspmmjcA/viewform?usp=pp_url&entry.1279682989="+encodeURIComponent(resumo),"_blank");
+  window.open(
+    "https://docs.google.com/forms/d/e/1FAIpQLSd9A2GujhNfiwqwT-hQSiVuE7k1obWRfQexdSaIBndspmmjcA/viewform?usp=pp_url&entry.1279682989="+encodeURIComponent(resumo),
+    "_blank"
+  );
 }
 
-function fecharCarrinho(){cartModal.style.display="none";}
-floatingCart.onclick=()=>cartModal.style.display="block";
-
-const cartItems=document.getElementById("cartItems");
-const cartItemsMobile=document.getElementById("cartItemsMobile");
-const subtotalEl=document.getElementById("subtotal");
-const subtotalMobile=document.getElementById("subtotalMobile");
-const taxEl=document.getElementById("tax");
-const taxMobile=document.getElementById("taxMobile");
-const totalEl=document.getElementById("total");
-const totalMobile=document.getElementById("totalMobile");
-const taxPercent=document.getElementById("taxPercent");
-const taxPercentMobile=document.getElementById("taxPercentMobile");
-const cartCount=document.getElementById("cartCount");
-const floatingCart=document.getElementById("floatingCart");
-const cartModal=document.getElementById("cartModal");
+function fecharCarrinho(){
+  document.getElementById("cartModal").style.display="none";
+}
+document.getElementById("floatingCart").onclick=()=>{
+  document.getElementById("cartModal").style.display="block";
+};
 </script>
 
 </body>
