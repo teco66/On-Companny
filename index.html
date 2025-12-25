@@ -238,8 +238,9 @@ const api=document.createElement("script");
 api.src="https://script.google.com/macros/s/AKfycbyhm76e4cB0aKRu85ndNfQmiFY8fiUD-2pHfIGgH6FVEPsTA03QOnVnI4bxI2iSPtk9/exec?callback=carregarProdutos&v="+Date.now();
 document.body.appendChild(api);
 
-const getCategoria=p=>p.categoria||p.category||"";
-const getImagem=p=>p.imagem||p.image||"";
+const getCategoria = p => p.categoria || p.category || "";
+const getImagem   = p => p.imagem || p.image || "";
+const getNome     = p => p.name || p.nome || p.produto || p.title || "";
 
 function criarCategorias(){
   const menu=document.getElementById("menuCategorias");
@@ -264,7 +265,7 @@ function render(cat="Todos"){
   d.className = "card";
   d.innerHTML = `
     <div class="card-image" style="background-image:url('${getImagem(p)}')"></div>
-    <h3>${p.name}</h3>
+    <h3>${getNome(p)}</h3>
     <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
     <div class="controls">
       <input type="number" min="1" value="1" id="q-${safeId}">
@@ -277,7 +278,14 @@ function render(cat="Todos"){
 function addToCart(id){
   const p = productsData.find(x => String(x.id) === String(id));
   const q=parseInt(document.getElementById("q-"+id).value);
-  cart[id]?cart[id].qty+=q:cart[id]={...p,qty:q};
+  cart[id]
+  ? cart[id].qty += q
+  : cart[id] = {
+      id: id,
+      name: getNome(p),
+      price: p.price,
+      qty: q
+    };
   updateCart();
 }
 
@@ -322,6 +330,7 @@ floatingCart.onclick=()=>cartModal.style.display="block";
 
 </body>
 </html>
+
 
 
 
