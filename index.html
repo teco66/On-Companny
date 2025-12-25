@@ -253,7 +253,7 @@ function render(cat="Todos"){
     const d=document.createElement("div");
     d.className="card";
     d.innerHTML=`
-      <div class="card-image" style="background-image:url('${p.image||""}')"></div>
+      <div class="card-image" style="background-image:url('${p.imagem || ""}')"></div>
       <h3>${p.name}</h3>
       <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
       <div class="controls">
@@ -323,3 +323,4 @@ document.getElementById("floatingCart").onclick=()=>{
 
 </body>
 </html>
+
