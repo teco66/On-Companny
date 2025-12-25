@@ -265,7 +265,7 @@ function render(cat="Todos"){
       <h3>${p.name}</h3>
       <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
       <div class="controls">
-        <input type="number" min="1" value="1" id="q-${p.id}">
+        <input type="number" min="1" value="1" id="q-${String(p.id)}">
         <button onclick="addToCart('${p.id}')">Adicionar</button>
       </div>`;
     pDiv.appendChild(d);
@@ -273,7 +273,7 @@ function render(cat="Todos"){
 }
 
 function addToCart(id){
-  const p=productsData.find(x=>x.id===id);
+  const p = productsData.find(x => String(x.id) === String(id));
   const q=parseInt(document.getElementById("q-"+id).value);
   cart[id]?cart[id].qty+=q:cart[id]={...p,qty:q};
   updateCart();
@@ -320,4 +320,5 @@ floatingCart.onclick=()=>cartModal.style.display="block";
 
 </body>
 </html>
+
 
