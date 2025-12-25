@@ -66,7 +66,7 @@ h1{text-align:center;margin:16px 0 4px;}
   cursor:pointer;
 }
 
-/* ===== CARRINHO DESKTOP ===== */
+/* CARRINHO DESKTOP */
 .cart{
   width:320px;
   background:#fff;
@@ -172,103 +172,76 @@ h1{text-align:center;margin:16px 0 4px;}
 <div class="container">
   <div class="products" id="products"></div>
 
-  <!-- DESKTOP -->
   <div class="cart">
     <h2>Seu carrinho</h2>
     <ul id="cartItems"></ul>
-
     <p>Subtotal: <strong><span id="subtotal">0</span> Kz</strong></p>
     <p>Taxa (<span id="taxPercent">15%</span>): <strong><span id="tax">0</span> Kz</strong></p>
     <p>Total: <strong><span id="total">0</span> Kz</strong></p>
-
     <button class="finalizar" onclick="finalizarCompra()">Finalizar compra</button>
-
-    <div class="info">
-      • Taxa de serviço: 15% abaixo de 150.000 Kz<br>
-      • Taxa de serviço: 10% acima de 150.000 Kz<br>
-      • Taxa alfandegária: 30% (paga na retirada)<br>
-      • Custo de peso: 16.000 Kz por kg<br>
-      • Peso informado antes do envio
-    </div>
   </div>
 </div>
 
-<!-- BOLHA -->
-<div class="floating-cart" id="floatingCart">
-  🛒 <span id="cartCount">0</span>
-</div>
+<div class="floating-cart" id="floatingCart">🛒 <span id="cartCount">0</span></div>
 
-<!-- MOBILE -->
 <div class="cart-modal" id="cartModal">
   <div class="cart-mobile">
     <h2>Seu carrinho</h2>
     <ul id="cartItemsMobile"></ul>
-
     <p>Subtotal: <strong><span id="subtotalMobile">0</span> Kz</strong></p>
     <p>Taxa (<span id="taxPercentMobile">15%</span>): <strong><span id="taxMobile">0</span> Kz</strong></p>
     <p>Total: <strong><span id="totalMobile">0</span> Kz</strong></p>
-
     <button class="finalizar" onclick="finalizarCompra()">Finalizar compra</button>
     <button class="finalizar" style="background:#999" onclick="fecharCarrinho()">Continuar comprando</button>
-
-    <div class="info">
-      • Taxa de serviço: 15% abaixo de 150.000 Kz<br>
-      • Taxa de serviço: 10% acima de 150.000 Kz<br>
-      • Taxa alfandegária: 30% (paga na retirada)<br>
-      • Custo de peso: 16.000 Kz por kg<br>
-      • Peso informado antes do envio
-    </div>
   </div>
 </div>
 
 <script>
-let productsData = [], cart = {};
+let productsData=[], cart={};
 
 function carregarProdutos(data){
-  productsData = data;
+  productsData=data;
   criarCategorias();
   render();
 }
 
-/* 🔒 cache bust para Apps Script */
-const api = document.createElement("script");
-api.src =
-  "https://script.google.com/macros/s/AKfycbyhm76e4cB0aKRu85ndNfQmiFY8fiUD-2pHfIGgH6FVEPsTA03QOnVnI4bxI2iSPtk9/exec" +
-  "?callback=carregarProdutos&v=" + Date.now();
+/* quebra cache do Apps Script */
+const api=document.createElement("script");
+api.src="https://script.google.com/macros/s/AKfycbyhm76e4cB0aKRu85ndNfQmiFY8fiUD-2pHfIGgH6FVEPsTA03QOnVnI4bxI2iSPtk9/exec?callback=carregarProdutos&v="+Date.now();
 document.body.appendChild(api);
 
+function getCategoria(p){
+  return p.categoria || p.category || "";
+}
+function getImagem(p){
+  return p.imagem || p.image || "";
+}
+
 function criarCategorias(){
-  const menu = document.getElementById("menuCategorias");
-  menu.innerHTML = "";
-
-  const categorias = [
+  const menu=document.getElementById("menuCategorias");
+  menu.innerHTML="";
+  const categorias=[
     "Todos",
-    ...new Set(
-      productsData
-        .map(p => p.categoria)
-        .filter(c => c && c.trim() !== "")
-    )
+    ...new Set(productsData.map(getCategoria).filter(c=>c))
   ];
-
-  categorias.forEach(c => {
-    const b = document.createElement("button");
-    b.innerText = c;
-    b.onclick = () => render(c);
+  categorias.forEach(c=>{
+    const b=document.createElement("button");
+    b.innerText=c;
+    b.onclick=()=>render(c);
     menu.appendChild(b);
   });
 }
 
-function render(cat = "Todos"){
-  const pDiv = document.getElementById("products");
-  pDiv.innerHTML = "";
-
+function render(cat="Todos"){
+  const pDiv=document.getElementById("products");
+  pDiv.innerHTML="";
   productsData
-    .filter(p => cat === "Todos" || p.categoria === cat)
-    .forEach(p => {
-      const d = document.createElement("div");
-      d.className = "card";
-      d.innerHTML = `
-        <div class="card-image" style="background-image:url('${p.imagem || ""}')"></div>
+    .filter(p=>cat==="Todos"||getCategoria(p)===cat)
+    .forEach(p=>{
+      const d=document.createElement("div");
+      d.className="card";
+      d.innerHTML=`
+        <div class="card-image" style="background-image:url('${getImagem(p)}')"></div>
         <h3>${p.name}</h3>
         <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
         <div class="controls">
@@ -280,62 +253,58 @@ function render(cat = "Todos"){
 }
 
 function addToCart(id){
-  const p = productsData.find(x => x.id === id);
-  const q = parseInt(document.getElementById("q-" + id).value);
-  cart[id] ? cart[id].qty += q : cart[id] = { ...p, qty: q };
+  const p=productsData.find(x=>x.id===id);
+  const q=parseInt(document.getElementById("q-"+id).value);
+  cart[id]?cart[id].qty+=q:cart[id]={...p,qty:q};
   updateCart();
 }
 
 function updateCart(){
-  const items = Object.values(cart);
-  const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
-  const rate = subtotal >= 150000 ? 0.10 : 0.15;
-  const tax = subtotal * rate;
-  const total = subtotal + tax;
+  const items=Object.values(cart);
+  const subtotal=items.reduce((s,i)=>s+i.price*i.qty,0);
+  const rate=subtotal>=150000?0.10:0.15;
+  const tax=subtotal*rate;
+  const total=subtotal+tax;
 
-  document.getElementById("cartItems").innerHTML =
-  document.getElementById("cartItemsMobile").innerHTML =
-    items.map(i => `<li>${i.name} (${i.qty}x)</li>`).join("");
+  document.getElementById("cartItems").innerHTML=
+  document.getElementById("cartItemsMobile").innerHTML=
+    items.map(i=>`<li>${i.name} (${i.qty}x)</li>`).join("");
 
-  document.getElementById("subtotal").innerText =
-  document.getElementById("subtotalMobile").innerText =
+  document.getElementById("subtotal").innerText=
+  document.getElementById("subtotalMobile").innerText=
     subtotal.toLocaleString("pt-BR");
 
-  document.getElementById("tax").innerText =
-  document.getElementById("taxMobile").innerText =
+  document.getElementById("tax").innerText=
+  document.getElementById("taxMobile").innerText=
     tax.toLocaleString("pt-BR");
 
-  document.getElementById("total").innerText =
-  document.getElementById("totalMobile").innerText =
+  document.getElementById("total").innerText=
+  document.getElementById("totalMobile").innerText=
     total.toLocaleString("pt-BR");
 
-  document.getElementById("taxPercent").innerText =
-  document.getElementById("taxPercentMobile").innerText =
-    (rate * 100) + "%";
+  document.getElementById("taxPercent").innerText=
+  document.getElementById("taxPercentMobile").innerText=
+    (rate*100)+"%";
 
-  document.getElementById("cartCount").innerText =
-    items.reduce((s, i) => s + i.qty, 0);
+  document.getElementById("cartCount").innerText=
+    items.reduce((s,i)=>s+i.qty,0);
 
-  document.getElementById("floatingCart").style.display = "flex";
+  document.getElementById("floatingCart").style.display="flex";
 }
 
 function finalizarCompra(){
-  const resumo = Object.values(cart)
-    .map(i => `${i.name} (${i.qty}x)`)
-    .join(", ");
+  const resumo=Object.values(cart).map(i=>`${i.name} (${i.qty}x)`).join(", ");
   window.open(
-    "https://docs.google.com/forms/d/e/1FAIpQLSd9A2GujhNfiwqwT-hQSiVuE7k1obWRfQexdSaIBndspmmjcA/viewform?usp=pp_url&entry.1279682989=" +
-      encodeURIComponent(resumo),
+    "https://docs.google.com/forms/d/e/1FAIpQLSd9A2GujhNfiwqwT-hQSiVuE7k1obWRfQexdSaIBndspmmjcA/viewform?usp=pp_url&entry.1279682989="+encodeURIComponent(resumo),
     "_blank"
   );
 }
 
 function fecharCarrinho(){
-  document.getElementById("cartModal").style.display = "none";
+  document.getElementById("cartModal").style.display="none";
 }
-
-document.getElementById("floatingCart").onclick = () => {
-  document.getElementById("cartModal").style.display = "block";
+document.getElementById("floatingCart").onclick=()=>{
+  document.getElementById("cartModal").style.display="block";
 };
 </script>
 
