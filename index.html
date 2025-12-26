@@ -278,7 +278,12 @@ function addToCart(index){
 
   cart[index]
     ? cart[index].qty += q
-    : cart[index] = { id:index, name:getNome(p), price:p.price, qty:q };
+    : cart[index] = {
+        id: p.id,          // 🔥 CÓDIGO REAL DA PLANILHA (COS01)
+        name: getNome(p),
+        price: p.price,
+        qty: q
+      };
 
   updateCart();
 }
@@ -351,3 +356,4 @@ floatingCart.onclick = () => cartModal.style.display="block";
 
 </body>
 </html>
+
