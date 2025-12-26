@@ -229,7 +229,7 @@ function carregarProdutos(data){
 }
 
 const api = document.createElement("script");
-api.src = "https://script.google.com/macros/s/AKfycbyhm76e4cB0aKRu85ndNfQmiFY8fiUD-2pHfIGgH6FVEPsTA03QOnVnI4bxI2iSPtk9/exec?callback=carregarProdutos&v=" + Date.now();
+api.src = "https://script.google.com/macros/s/AKfycbyhm76e4cB0aKRu85ndNfQmiFY8fiUD-2pHfIGgH6FVEPsTA03QOnVnI4bxI2iSPtk9/exec?callback=carregarProdutos&v=/exec" + Date.now();
 document.body.appendChild(api);
 
 const getCategoria = p => p.categoria || p.category || "";
@@ -326,3 +326,4 @@ floatingCart.onclick = () => cartModal.style.display="block";
 
 </body>
 </html>
+
