@@ -228,8 +228,11 @@ function carregarProdutos(data){
   render();
 }
 
+/* 🔥 CORREÇÃO CRÍTICA DO JSONP */
 const api = document.createElement("script");
-api.src = "https://script.google.com/macros/s/AKfycbwTLeZAED_Z8Yun2cJ92_rMRzsHqHJK2rNsQITcuAvwH6v8K7gASZLr07wodST4zQ0E/exec" + Date.now();
+api.src =
+  "https://script.google.com/macros/s/AKfycbwTLeZAED_Z8Yun2cJ92_rMRzsHqHJK2rNsQITcuAvwH6v8K7gASZLr07wodST4zQ0E/exec"
+  + "?callback=carregarProdutos&v=" + Date.now();
 document.body.appendChild(api);
 
 const getCategoria = p => p.categoria || p.category || "";
@@ -275,12 +278,7 @@ function addToCart(index){
 
   cart[index]
     ? cart[index].qty += q
-    : cart[index] = {
-        id: index,
-        name: getNome(p),
-        price: p.price,
-        qty: q
-      };
+    : cart[index] = { id:index, name:getNome(p), price:p.price, qty:q };
 
   updateCart();
 }
@@ -312,9 +310,13 @@ function updateCart(){
 }
 
 function finalizarCompra(){
-  const resumo = Object.values(cart).map(i=>`${i.name} (${i.qty}x)`).join(", ");
+  const resumo = Object.values(cart)
+    .map(i=>`${i.name} (${i.qty}x)`)
+    .join(", ");
+
   window.open(
-    "https://docs.google.com/forms/d/e/1FAIpQLSd9A2GujhNfiwqwT-hQSiVuE7k1obWRfQexdSaIBndspmmjcA/viewform?usp=pp_url&entry.1279682989="+encodeURIComponent(resumo),
+    "https://docs.google.com/forms/d/e/1FAIpQLSd9A2GujhNfiwqwT-hQSiVuE7k1obWRfQexdSaIBndspmmjcA/viewform?usp=pp_url&entry.1279682989="
+    + encodeURIComponent(resumo),
     "_blank"
   );
 }
@@ -326,5 +328,3 @@ floatingCart.onclick = () => cartModal.style.display="block";
 
 </body>
 </html>
-
-
