@@ -276,10 +276,12 @@ function addToCart(index){
   const p = productsData[index];
   const q = parseInt(document.getElementById("q-" + index).value) || 1;
 
+  const codigoProduto = p.id ? String(p.id) : "AUTO_" + index;
+
   cart[index]
     ? cart[index].qty += q
     : cart[index] = {
-        id: p.id,          // 🔥 CÓDIGO REAL DA PLANILHA (COS01)
+        id: codigoProduto,   // 🔥 AGORA NUNCA MAIS NULL
         name: getNome(p),
         price: p.price,
         qty: q
@@ -356,4 +358,5 @@ floatingCart.onclick = () => cartModal.style.display="block";
 
 </body>
 </html>
+
 
