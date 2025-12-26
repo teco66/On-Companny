@@ -296,24 +296,46 @@ function removeFromCart(codigo){
 }
 
 function updateCart(){
-  const items = Object.values(cart);
-  const subtotal = items.reduce((s,i)=>s+i.price*i.qty,0);
-  const rate = subtotal>=150000 ? 0.10 : 0.15;
-  const tax = subtotal*rate;
-  const total = subtotal+tax;
+  const keys = Object.keys(cart);
 
-  const html = items.map(i=>`
-    <li>${i.name} (${i.qty}x)
-      <button onclick="removeFromCart('${i.id}')">🗑</button>
-    </li>`).join("");
+  let subtotalCalc = 0;
+
+  const html = keys.map(codigo => {
+    const i = cart[codigo];
+    subtotalCalc += i.price * i.qty;
+
+    return `
+      <li>
+        ${i.name} (${i.qty}x)
+        <button onclick="removeFromCart('${codigo}')">🗑</button>
+      </li>
+    `;
+  }).join("");
+
+  const rate = subtotalCalc >= 150000 ? 0.10 : 0.15;
+  const taxCalc = subtotalCalc * rate;
+  const totalCalc = subtotalCalc + taxCalc;
 
   cartItems.innerHTML = cartItemsMobile.innerHTML = html;
-  subtotal.innerText = subtotalMobile.innerText = subtotal.toLocaleString("pt-BR");
-  tax.innerText = taxMobile.innerText = tax.toLocaleString("pt-BR");
-  total.innerText = totalMobile.innerText = total.toLocaleString("pt-BR");
-  taxPercent.innerText = taxPercentMobile.innerText = (rate*100)+"%";
-  cartCount.innerText = items.reduce((s,i)=>s+i.qty,0);
-  floatingCart.style.display = items.length ? "flex" : "none";
+
+  subtotal.innerText = subtotalMobile.innerText =
+    subtotalCalc.toLocaleString("pt-BR");
+
+  tax.innerText = taxMobile.innerText =
+    taxCalc.toLocaleString("pt-BR");
+
+  total.innerText = totalMobile.innerText =
+    totalCalc.toLocaleString("pt-BR");
+
+  taxPercent.innerText = taxPercentMobile.innerText =
+    (rate * 100) + "%";
+
+  cartCount.innerText = keys.reduce(
+    (s, k) => s + cart[k].qty,
+    0
+  );
+
+  floatingCart.style.display = keys.length ? "flex" : "none";
 }
 
 /* 🔥 FETCH RECOLOCADO (ENVIO PARA PLANILHA) */
@@ -358,6 +380,7 @@ floatingCart.onclick = () => cartModal.style.display="block";
 
 </body>
 </html>
+
 
 
 
