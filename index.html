@@ -276,12 +276,12 @@ function addToCart(index){
   const p = productsData[index];
   const q = parseInt(document.getElementById("q-" + index).value) || 1;
 
-  const codigoProduto = p.id ? String(p.id) : "AUTO_" + index;
+  const codigoProduto = String(p.id).trim();
 
-  cart[index]
-    ? cart[index].qty += q
-    : cart[index] = {
-        id: codigoProduto,   // 🔥 AGORA NUNCA MAIS NULL
+  cart[codigoProduto]
+    ? cart[codigoProduto].qty += q
+    : cart[codigoProduto] = {
+        id: codigoProduto,
         name: getNome(p),
         price: p.price,
         qty: q
@@ -290,8 +290,8 @@ function addToCart(index){
   updateCart();
 }
 
-function removeFromCart(index){
-  delete cart[index];
+function removeFromCart(codigo){
+  delete cart[codigo];
   updateCart();
 }
 
@@ -304,7 +304,7 @@ function updateCart(){
 
   const html = items.map(i=>`
     <li>${i.name} (${i.qty}x)
-      <button onclick="removeFromCart(${i.id})">🗑</button>
+      <button onclick="removeFromCart('${i.id}')">🗑</button>
     </li>`).join("");
 
   cartItems.innerHTML = cartItemsMobile.innerHTML = html;
@@ -358,6 +358,7 @@ floatingCart.onclick = () => cartModal.style.display="block";
 
 </body>
 </html>
+
 
 
 
