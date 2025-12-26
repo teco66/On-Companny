@@ -266,22 +266,25 @@ function render(cat="Todos"){
         <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
         <div class="controls">
           <input type="number" min="1" value="1" id="q-${index}">
-          <button onclick="addToCart(${index})">Adicionar</button>
+          <button onclick="addToCart('${p.id}')">Adicionar</button>
         </div>`;
       pDiv.appendChild(d);
     });
 }
 
-function addToCart(index){
-  const p = productsData[index];
-  const q = parseInt(document.getElementById("q-" + index).value) || 1;
+function addToCart(codigo){
+  const p = productsData.find(x => String(x.id) === String(codigo));
+  if (!p) return;
 
-  const codigoProduto = String(p.id).trim();
+  const qInput = document.getElementById(
+    "q-" + productsData.indexOf(p)
+  );
+  const q = parseInt(qInput.value) || 1;
 
-  cart[codigoProduto]
-    ? cart[codigoProduto].qty += q
-    : cart[codigoProduto] = {
-        id: codigoProduto,
+  cart[codigo]
+    ? cart[codigo].qty += q
+    : cart[codigo] = {
+        id: codigo,
         name: getNome(p),
         price: p.price,
         qty: q
@@ -380,6 +383,7 @@ floatingCart.onclick = () => cartModal.style.display="block";
 
 </body>
 </html>
+
 
 
 
