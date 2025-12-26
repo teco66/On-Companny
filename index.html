@@ -42,15 +42,14 @@ h1{text-align:center;margin:16px 0 4px;}
   box-shadow:0 8px 18px rgba(0,0,0,.06);
 }
 
-/* ✅ AJUSTE DEFINITIVO DA IMAGEM (DESKTOP + MOBILE) */
 .card-image{
   width:100%;
   aspect-ratio:1/1;
   border-radius:12px;
   background:#eee;
-  background-size:contain;      /* 🔥 NÃO CORTA */
+  background-size:contain;
   background-position:center;
-  background-repeat:no-repeat; /* 🔥 EVITA DUPLICAR */
+  background-repeat:no-repeat;
   margin-bottom:8px;
 }
 
@@ -70,7 +69,6 @@ h1{text-align:center;margin:16px 0 4px;}
   cursor:pointer;
 }
 
-/* CARRINHO DESKTOP */
 .cart{
   width:320px;
   background:#fff;
@@ -95,7 +93,6 @@ h1{text-align:center;margin:16px 0 4px;}
   font-size:16px;
 }
 
-/* INFO */
 .info{
   font-size:12px;
   color:#666;
@@ -115,13 +112,11 @@ h1{text-align:center;margin:16px 0 4px;}
   cursor:pointer;
 }
 
-/* MOBILE */
 @media (max-width:900px){
   .products{grid-template-columns:repeat(2,1fr);}
   .cart{display:none;}
 }
 
-/* BOLHA */
 .floating-cart{
   position:fixed;
   bottom:20px;
@@ -156,7 +151,6 @@ h1{text-align:center;margin:16px 0 4px;}
   .floating-cart{display:flex;}
 }
 
-/* MODAL MOBILE */
 .cart-modal{
   position:fixed;
   inset:0;
@@ -226,16 +220,16 @@ h1{text-align:center;margin:16px 0 4px;}
 </div>
 
 <script>
-let productsData=[], cart={};
+let productsData = [], cart = {};
 
 function carregarProdutos(data){
-  productsData=data;
+  productsData = data;
   criarCategorias();
   render();
 }
 
-const api=document.createElement("script");
-api.src="https://script.google.com/macros/s/AKfycbyhm76e4cB0aKRu85ndNfQmiFY8fiUD-2pHfIGgH6FVEPsTA03QOnVnI4bxI2iSPtk9/exec?callback=carregarProdutos&v="+Date.now();
+const api = document.createElement("script");
+api.src = "https://script.google.com/macros/s/AKfycbyhm76e4cB0aKRu85ndNfQmiFY8fiUD-2pHfIGgH6FVEPsTA03QOnVnI4bxI2iSPtk9/exec?callback=carregarProdutos&v=" + Date.now();
 document.body.appendChild(api);
 
 const getCategoria = p => p.categoria || p.category || "";
@@ -243,80 +237,82 @@ const getImagem   = p => p.imagem || p.image || "";
 const getNome     = p => p.name || p.nome || p.produto || p.title || "";
 
 function criarCategorias(){
-  const menu=document.getElementById("menuCategorias");
-  menu.innerHTML="";
-  ["Todos",...new Set(productsData.map(getCategoria).filter(c=>c))]
-    .forEach(c=>{
-      const b=document.createElement("button");
-      b.innerText=c;
-      b.onclick=()=>render(c);
+  const menu = document.getElementById("menuCategorias");
+  menu.innerHTML = "";
+  ["Todos", ...new Set(productsData.map(getCategoria).filter(c => c))]
+    .forEach(c => {
+      const b = document.createElement("button");
+      b.innerText = c;
+      b.onclick = () => render(c);
       menu.appendChild(b);
     });
 }
 
 function render(cat="Todos"){
-  const pDiv=document.getElementById("products");
-  pDiv.innerHTML="";
-  productsData.filter(p=>cat==="Todos"||getCategoria(p)===cat)
-  .forEach((p, index)=>{
-  const safeId = p.id ? String(p.id) : "AUTO_" + index;
+  const pDiv = document.getElementById("products");
+  pDiv.innerHTML = "";
 
-  const d = document.createElement("div");
-  d.className = "card";
-  d.innerHTML = `
-    <div class="card-image" style="background-image:url('${getImagem(p)}')"></div>
-    <h3>${getNome(p)}</h3>
-    <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
-    <div class="controls">
-      <input type="number" min="1" value="1" id="q-${safeId}">
-      <button onclick="addToCart('${safeId}')">Adicionar</button>
-    </div>`;
-  pDiv.appendChild(d);
-});
+  productsData
+    .filter(p => cat==="Todos" || getCategoria(p)===cat)
+    .forEach((p, index) => {
+      const d = document.createElement("div");
+      d.className = "card";
+      d.innerHTML = `
+        <div class="card-image" style="background-image:url('${getImagem(p)}')"></div>
+        <h3>${getNome(p)}</h3>
+        <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
+        <div class="controls">
+          <input type="number" min="1" value="1" id="q-${index}">
+          <button onclick="addToCart(${index})">Adicionar</button>
+        </div>`;
+      pDiv.appendChild(d);
+    });
 }
 
-function addToCart(id){
-  const p = productsData.find(x => String(x.id) === String(id));
-  const q=parseInt(document.getElementById("q-"+id).value);
-  cart[id]
-  ? cart[id].qty += q
-  : cart[id] = {
-      id: id,
-      name: getNome(p),
-      price: p.price,
-      qty: q
-    };
+function addToCart(index){
+  const p = productsData[index];
+  const q = parseInt(document.getElementById("q-" + index).value) || 1;
+
+  cart[index]
+    ? cart[index].qty += q
+    : cart[index] = {
+        id: index,
+        name: getNome(p),
+        price: p.price,
+        qty: q
+      };
+
   updateCart();
 }
 
-function removeFromCart(id){
-  delete cart[id];
+function removeFromCart(index){
+  delete cart[index];
   updateCart();
 }
 
 function updateCart(){
-  const items=Object.values(cart);
-  const subtotal=items.reduce((s,i)=>s+i.price*i.qty,0);
-  const rate=subtotal>=150000?0.10:0.15;
-  const tax=subtotal*rate;
-  const total=subtotal+tax;
+  const items = Object.values(cart);
+  const subtotal = items.reduce((s,i)=>s+i.price*i.qty,0);
+  const rate = subtotal>=150000 ? 0.10 : 0.15;
+  const tax = subtotal*rate;
+  const total = subtotal+tax;
 
-  const html=items.map(i=>`
+  const html = items.map(i=>`
     <li>${i.name} (${i.qty}x)
       <button onclick="removeFromCart(${i.id})">🗑</button>
     </li>`).join("");
 
-  cartItems.innerHTML=cartItemsMobile.innerHTML=html;
-  subtotal.innerText=subtotalMobile.innerText=subtotal.toLocaleString("pt-BR");
-  tax.innerText=taxMobile.innerText=tax.toLocaleString("pt-BR");
-  total.innerText=totalMobile.innerText=total.toLocaleString("pt-BR");
-  taxPercent.innerText=taxPercentMobile.innerText=(rate*100)+"%";
-  cartCount.innerText=items.reduce((s,i)=>s+i.qty,0);
-  floatingCart.style.display=items.length?"flex":"none";
+  cartItems.innerHTML = cartItemsMobile.innerHTML = html;
+  subtotal.innerText = subtotalMobile.innerText = subtotal.toLocaleString("pt-BR");
+  tax.innerText = taxMobile.innerText = tax.toLocaleString("pt-BR");
+  total.innerText = totalMobile.innerText = total.toLocaleString("pt-BR");
+  taxPercent.innerText = taxPercentMobile.innerText = (rate*100)+"%";
+  cartCount.innerText = items.reduce((s,i)=>s+i.qty,0);
+  floatingCart.style.display = items.length ? "flex" : "none";
 }
 
 function finalizarCompra(){
-  const resumo=Object.values(cart).map(i=>`${i.name} (${i.qty}x)`).join(", ");
+  const resumo = Object.values(cart).map(i=>`${i.name} (${i.qty}x)`).join(", ");
   window.open(
     "https://docs.google.com/forms/d/e/1FAIpQLSd9A2GujhNfiwqwT-hQSiVuE7k1obWRfQexdSaIBndspmmjcA/viewform?usp=pp_url&entry.1279682989="+encodeURIComponent(resumo),
     "_blank"
@@ -325,12 +321,8 @@ function finalizarCompra(){
 function fecharCarrinho(){
   cartModal.style.display="none";
 }
-floatingCart.onclick=()=>cartModal.style.display="block";
+floatingCart.onclick = () => cartModal.style.display="block";
 </script>
 
 </body>
 </html>
-
-
-
-
