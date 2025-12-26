@@ -228,7 +228,7 @@ function carregarProdutos(data){
   render();
 }
 
-/* 🔥 CORREÇÃO CRÍTICA DO JSONP */
+/* 🔹 JSONP PARA CARREGAR PRODUTOS */
 const api = document.createElement("script");
 api.src =
   "https://script.google.com/macros/s/AKfycbwTLeZAED_Z8Yun2cJ92_rMRzsHqHJK2rNsQITcuAvwH6v8K7gASZLr07wodST4zQ0E/exec"
@@ -309,7 +309,29 @@ function updateCart(){
   floatingCart.style.display = items.length ? "flex" : "none";
 }
 
+/* 🔥 FETCH RECOLOCADO (ENVIO PARA PLANILHA) */
 function finalizarCompra(){
+
+  const itensCodigo = Object.values(cart)
+    .map(i => `${i.id}:${i.qty}`)
+    .join(" | ");
+
+  const subtotal = Object.values(cart)
+    .reduce((s,i)=>s+i.price*i.qty,0);
+
+  const rate = subtotal>=150000 ? 0.10 : 0.15;
+  const total = Math.round(subtotal * (1 + rate));
+
+  // ENVIO INVISÍVEL PARA O APPS SCRIPT
+  fetch("https://script.google.com/macros/s/AKfycbwTLeZAED_Z8Yun2cJ92_rMRzsHqHJK2rNsQITcuAvwH6v8K7gASZLr07wodST4zQ0E/exec", {
+    method: "POST",
+    body: JSON.stringify({
+      itens: itensCodigo,
+      total: total
+    })
+  });
+
+  // CONTINUA IGUAL: ABRE O FORMS
   const resumo = Object.values(cart)
     .map(i=>`${i.name} (${i.qty}x)`)
     .join(", ");
@@ -320,6 +342,7 @@ function finalizarCompra(){
     "_blank"
   );
 }
+
 function fecharCarrinho(){
   cartModal.style.display="none";
 }
