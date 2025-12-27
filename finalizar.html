@@ -279,15 +279,18 @@ btnEnviar.onclick = async () => {
 
     try {
       const resp = await fetch(
-        "https://script.google.com/macros/s/AKfycbwrgqXvMEpcbX1dDldcHHS9CrQPm8C0r8fVisTsmhOqNQc8aJ7xCkdWwQK62c_DdzW9/exec",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        }
-      );
+  "https://script.google.com/macros/s/AKfycbwrgqXvMEpcbX1dDldcHHS9CrQPm8C0r8fVisTsmhOqNQc8aJ7xCkdWwQK62c_DdzW9/exec",
+  {
+    method: "POST",
+    body: new URLSearchParams({
+      data: JSON.stringify(payload)
+    })
+  }
+);
 
-      const result = await resp.json();
+const text = await resp.text();
+const result = JSON.parse(text);
+
 
       if (result.status === "ok") {
         localStorage.removeItem("cart");
@@ -308,4 +311,5 @@ btnEnviar.onclick = async () => {
 
 </body>
 </html>
+
 
