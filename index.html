@@ -129,7 +129,30 @@ h1{text-align:center;margin:16px 0 4px;}
   cursor:pointer;
 }
 
-/* ===== BOLHA MOBILE ===== */
+/* ===== PAGAMENTO (SÓ MOBILE) ===== */
+.mobile-only{display:none;}
+
+.pagamento{
+  margin-top:16px;
+  background:#f0f7f4;
+  border:1px solid #cfe7dd;
+  padding:14px;
+  border-radius:12px;
+  font-size:13px;
+}
+.pagamento .linha{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  margin:6px 0;
+}
+.pagamento code{
+  background:#fff;
+  padding:6px 8px;
+  border-radius:6px;
+}
+
+/* ===== BOLHA ===== */
 .floating-cart{
   position:fixed;
   bottom:20px;
@@ -180,6 +203,7 @@ h1{text-align:center;margin:16px 0 4px;}
   .cart.open{display:block;}
 
   .floating-cart{display:flex;}
+  .mobile-only{display:block;}
 }
 </style>
 </head>
@@ -203,14 +227,19 @@ h1{text-align:center;margin:16px 0 4px;}
     <p>Total: <strong><span id="total">0</span> Kz</strong></p>
 
     <button class="finalizar" onclick="irParaFinalizar()">Finalizar compra</button>
-    <button class="finalizar" style="background:#aaa" onclick="toggleCart()">← Voltar ao catálogo</button>
+    <button class="finalizar mobile-only" style="background:#aaa" onclick="toggleCart()">← Voltar ao catálogo</button>
 
-    <div class="info">
-      • Taxa de serviço: 15% abaixo de 150.000 Kz<br>
-      • Taxa de serviço: 10% acima de 150.000 Kz<br>
-      • Taxa alfandegária: 30% (paga na retirada)<br>
-      • Custo de peso: 16.000 Kz por kg<br>
-      • Peso informado antes do envio
+    <!-- PAGAMENTO MOBILE -->
+    <div class="pagamento mobile-only">
+      <strong>Angola – Transferência Bancária</strong>
+      <div class="linha"><span>BFA</span><code>000600002246601030178</code></div>
+      <div class="linha"><span>BAI</span><code>004000000242539210149</code></div>
+      <div class="linha"><span>BIC</span><code>005100005439922710131</code></div>
+      <div class="linha"><span>Millennium</span><code>005500001693032510136</code></div>
+      <div class="linha"><span>Banco Sol</span><code>004400009979788510185</code></div>
+      <hr>
+      <strong>Brasil – PIX</strong>
+      <div class="linha"><span>Chave</span><code>43604725000100</code></div>
     </div>
   </div>
 </div>
