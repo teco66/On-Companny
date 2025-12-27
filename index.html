@@ -204,6 +204,13 @@ h1{text-align:center;margin:16px 0 4px;}
     display:flex;
   }
 }
+  /* 🔒 GARANTIA ABSOLUTA: carrinho FECHADO no mobile */
+@media (max-width:900px){
+  .cart{
+    bottom:-100% !important;
+  }
+}
+
 </style>
 </head>
 
@@ -331,7 +338,13 @@ function irParaFinalizar(){
   localStorage.setItem("cart",JSON.stringify(cart));
   window.location.href="finalizar.html";
 }
+  // 🔒 garante carrinho fechado ao carregar no mobile
+window.addEventListener("load",()=>{
+  document.getElementById("cartBox")?.classList.remove("open");
+});
+
 </script>
 
 </body>
 </html>
+
