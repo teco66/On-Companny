@@ -236,7 +236,7 @@ btnEnviar.onclick=()=>{
       fileType:file.type
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbwuiHLQaUW4Sh4XNXuq6sfvsOYlaRRfVC8HCNY-hmJVMpaILKON5bBlYYYKku5EyUs/exec",{
+    fetch("https://script.google.com/macros/s/AKfycbznHVRwGCPHmQ6FeSvUIjK8TXjaVr5sRrM8RorpR2XVgY-wU2vPJ5wHyKE-lfRnvvfO/exec",{
       method:"POST",
       body:new URLSearchParams({data:JSON.stringify(payload)})
     }).catch(()=>{});
@@ -251,5 +251,6 @@ btnEnviar.onclick=()=>{
 
 </body>
 </html>
+
 
 
