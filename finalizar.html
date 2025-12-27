@@ -61,7 +61,6 @@ h1{text-align:center;margin-top:0}
   cursor:pointer;
   font-size:12px;
 }
-.copy-btn.copiado{background:#4caf50}
 
 label{display:block;font-size:14px;margin-bottom:6px}
 input{
@@ -214,7 +213,7 @@ removeBtn.onclick=()=>{
   btnEnviar.disabled=true;
 };
 
-btnEnviar.onclick=()=>{
+btnEnviar.onclick = async () => {
   let subtotal=0;
   const itens=Object.values(cart).map(i=>{
     subtotal+=i.price*i.qty;
@@ -224,7 +223,7 @@ btnEnviar.onclick=()=>{
   const file=fileInput.files[0];
   const reader=new FileReader();
 
-  reader.onload=()=>{
+  reader.onload = async () => {
     const payload={
       nome:nome.value.trim(),
       whatsapp:whatsapp.value.trim(),
@@ -236,13 +235,23 @@ btnEnviar.onclick=()=>{
       fileType:file.type
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbzHWorUhHlVEYLACZ0_yZWo-mBPlI9Ce3kbNPgvTSYXfAnt49mnvRD7Hb5n9hBJ_q_k/exec",{
-      method:"POST",
-      body:new URLSearchParams({data:JSON.stringify(payload)})
-    }).catch(()=>{});
+    try{
+      const resp = await fetch(
+        "https://script.google.com/macros/s/AKfycbzHWorUhHlVEYLACZ0_yZWo-mBPlI9Ce3kbNPgvTSYXfAnt49mnvRD7Hb5n9hBJ_q_k/exec",
+        {
+          method:"POST",
+          body:new URLSearchParams({data:JSON.stringify(payload)})
+        }
+      );
 
-    localStorage.removeItem("cart");
-    window.location.href="sucesso.html";
+      await resp.text(); // garante que chegou
+
+      localStorage.removeItem("cart");
+      window.location.href="sucesso.html";
+
+    }catch(err){
+      alert("Erro ao enviar pedido. Verifique sua conexão.");
+    }
   };
 
   reader.readAsDataURL(file);
@@ -251,9 +260,3 @@ btnEnviar.onclick=()=>{
 
 </body>
 </html>
-
-
-
-
-
-
