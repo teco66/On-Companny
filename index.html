@@ -140,8 +140,26 @@ h1{text-align:center;margin:16px 0 4px;}
 }
 
 @media (max-width:900px){
-  .products{grid-template-columns:repeat(2,1fr);}
-  .cart{display:none;}
+  .products{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .container{
+    flex-direction:column;
+    padding-bottom:220px; /* espaço para o carrinho fixo */
+  }
+
+  .cart{
+    display:block;
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    max-height:200px;
+    overflow-y:auto;
+    border-radius:20px 20px 0 0;
+    z-index:999;
+  }
 }
 </style>
 </head>
@@ -286,3 +304,4 @@ function irParaFinalizar(){
 
 </body>
 </html>
+
