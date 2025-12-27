@@ -30,7 +30,7 @@ h1{text-align:center;margin:16px 0 4px;}
   font-weight:bold;
   cursor:pointer;
   color:#555;
-  font-size:17px; /* 🔹 categorias maiores */
+  font-size:17px;
 }
 
 .container{
@@ -56,11 +56,15 @@ h1{text-align:center;margin:16px 0 4px;}
   box-shadow:0 8px 18px rgba(0,0,0,.06);
 }
 
+/* 🔹 IMAGENS – RESTAURADO EXATAMENTE COMO ESTAVA */
 .card-image{
   width:100%;
   aspect-ratio:1/1;
   border-radius:12px;
-  background:#eee center/contain no-repeat;
+  background:#eee;
+  background-size:contain;
+  background-position:center;
+  background-repeat:no-repeat;
   margin-bottom:8px;
 }
 
@@ -80,7 +84,7 @@ h1{text-align:center;margin:16px 0 4px;}
   cursor:pointer;
 }
 
-/* 🔹 CARRINHO DESKTOP */
+/* 🔹 CARRINHO */
 .cart{
   width:320px;
   background:#fff;
@@ -129,7 +133,7 @@ h1{text-align:center;margin:16px 0 4px;}
 }
 .cart-social img{width:18px;height:18px;}
 
-/* 🔹 BOLHA FLUTUANTE (MOBILE) */
+/* 🔹 BOLHA MOBILE */
 .floating-cart{
   position:fixed;
   bottom:20px;
@@ -159,7 +163,6 @@ h1{text-align:center;margin:16px 0 4px;}
   justify-content:center;
 }
 
-/* 🔹 MOBILE */
 @media(max-width:900px){
   .products{grid-template-columns:repeat(2,1fr);}
   .container{flex-direction:column;}
@@ -176,7 +179,6 @@ h1{text-align:center;margin:16px 0 4px;}
     z-index:999;
   }
   .cart.open{bottom:0;}
-
   .floating-cart{display:flex;}
 }
 </style>
@@ -221,9 +223,7 @@ h1{text-align:center;margin:16px 0 4px;}
   </div>
 </div>
 
-<div class="floating-cart" onclick="toggleCart()">
-  🛒 <span id="cartCount">0</span>
-</div>
+<div class="floating-cart" onclick="toggleCart()">🛒 <span id="cartCount">0</span></div>
 
 <script>
 let productsData=[], cart={};
@@ -235,7 +235,7 @@ api.src="https://script.google.com/macros/s/AKfycbw0arV3ESUNpLob63yRkE078OnVgiHU
 document.body.appendChild(api);
 
 const getCategoria=p=>p.categoria||"";
-const getImagem=p=>p.imagem||"";
+const getImagem=p=>p.imagem||p.image||"";
 const getNome=p=>p.name||p.nome||"";
 
 function criarCategorias(){
