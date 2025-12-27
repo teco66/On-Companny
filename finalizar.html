@@ -279,8 +279,61 @@ function copiar(id, btn){
 function voltarCatalogo(){
   window.location.href="index.html";
 }
+/* 🚀 ENVIO FINAL DO PEDIDO */
+btnEnviar.onclick = async () => {
+  const nome = document.getElementById("nome").value.trim();
+  const whatsapp = document.getElementById("whatsapp").value.trim();
+  const cidade = document.getElementById("cidade").value.trim();
+  const file = fileInput.files[0];
+
+  if (!nome || !whatsapp || !cidade || !file) {
+    alert("Preencha todos os campos obrigatórios e anexe o comprovante.");
+    return;
+  }
+
+  const cart = JSON.parse(localStorage.getItem("cart")) || {};
+  let subtotal = 0;
+
+  const itensCodigo = Object.values(cart)
+    .map(i => {
+      subtotal += i.price * i.qty;
+      return `${i.id}:${i.qty}`;
+    })
+    .join(" | ");
+
+  const reader = new FileReader();
+
+  reader.onload = async () => {
+    const base64 = reader.result.split(",")[1];
+
+    const payload = {
+      nome,
+      whatsapp,
+      cidade,
+      itens: itensCodigo,
+      subtotal,
+      file: base64,
+      fileName: file.name,
+      fileType: file.type
+    };
+
+    await fetch("https://script.google.com/macros/s/AKfycbwbroIKz8Ya4_rhnChP4mLjL_NJbLnj3xNJTF28ZgBeAnHha4Ijnd5OpXNKzYDCbjE1/exec", {
+      method: "POST",
+      body: new URLSearchParams({
+        data: JSON.stringify(payload)
+      })
+    });
+
+    localStorage.removeItem("cart");
+    window.location.href = "sucesso.html";
+  };
+
+  reader.readAsDataURL(file);
+};
+
 </script>
 
 </body>
 </html>
+
 
