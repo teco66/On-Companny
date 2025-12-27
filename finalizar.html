@@ -239,11 +239,35 @@ const fileInput=document.getElementById("comprovante");
 const removeBtn=document.getElementById("removeFile");
 const btnEnviar=document.getElementById("btnEnviar");
 
-fileInput.onchange=()=>{
-  if(fileInput.files.length){
-    btnEnviar.disabled=false;
-    removeBtn.style.display="block";
+function validarFormulario() {
+  const nome = document.getElementById("nome").value.trim();
+  const whatsapp = document.getElementById("whatsapp").value.trim();
+  const cidade = document.getElementById("cidade").value.trim();
+
+  const ok =
+    nome &&
+    whatsapp &&
+    cidade &&
+    fileInput.files.length;
+
+  btnEnviar.disabled = !ok;
+}
+
+fileInput.onchange = () => {
+  if (fileInput.files.length) {
+    removeBtn.style.display = "block";
   }
+  validarFormulario();
+};
+
+["nome","whatsapp","cidade"].forEach(id => {
+  document.getElementById(id).addEventListener("input", validarFormulario);
+});
+
+removeBtn.onclick = () => {
+  fileInput.value = "";
+  removeBtn.style.display = "none";
+  btnEnviar.disabled = true;
 };
 removeBtn.onclick=()=>{
   fileInput.value="";
@@ -317,6 +341,7 @@ const result = JSON.parse(text);
 
 </body>
 </html>
+
 
 
 
