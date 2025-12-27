@@ -88,6 +88,18 @@ button.enviar:disabled{
   cursor:not-allowed;
 }
 
+button.voltar{
+  margin-top:10px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:14px;
+  background:#999;
+  color:#fff;
+  font-size:14px;
+  cursor:pointer;
+}
+
 .footer{
   text-align:center;
   font-size:13px;
@@ -156,23 +168,16 @@ button.enviar:disabled{
       <button class="copy-btn" onclick="copiar('pix', this)">Copiar</button>
     </div>
 
-    <p style="margin-top:10px;font-size:13px">
-      ⚠️ Realize o pagamento para uma das opções acima e anexe o comprovante.
-    </p>
-
   </div>
 </div>
 
 <!-- 👤 DADOS -->
 <div class="section">
   <h2>👤 Dados do cliente</h2>
-
   <label>Nome completo *</label>
   <input id="nome">
-
   <label>WhatsApp *</label>
   <input id="whatsapp">
-
   <label>Cidade / Província *</label>
   <input id="cidade">
 </div>
@@ -180,27 +185,30 @@ button.enviar:disabled{
 <!-- 📎 COMPROVANTE -->
 <div class="section">
   <h2>📎 Comprovante de pagamento *</h2>
+
   <div style="position:relative">
-  <input type="file" id="comprovante" accept=".jpg,.jpeg,.png,.pdf">
-  <button
-    type="button"
-    id="removeFile"
-    style="
-      display:none;
-      position:absolute;
-      right:10px;
-      top:8px;
-      border:none;
-      background:#ff4d4d;
-      color:#fff;
-      border-radius:50%;
-      width:22px;
-      height:22px;
-      cursor:pointer;
-    ">×</button>
+    <input type="file" id="comprovante" accept=".jpg,.jpeg,.png,.pdf">
+    <button
+      type="button"
+      id="removeFile"
+      style="
+        display:none;
+        position:absolute;
+        right:10px;
+        top:8px;
+        border:none;
+        background:#ff4d4d;
+        color:#fff;
+        border-radius:50%;
+        width:22px;
+        height:22px;
+        cursor:pointer;
+      ">×</button>
+  </div>
 </div>
 
 <button class="enviar" id="btnEnviar" disabled>Enviar pedido</button>
+<button class="voltar" onclick="voltarCatalogo()">← Voltar ao catálogo</button>
 
 <div class="footer">
   O envio só é liberado após anexar o comprovante.
@@ -209,24 +217,7 @@ button.enviar:disabled{
 </div>
 
 <script>
-function copiar(id, btn){
-  navigator.clipboard.writeText(
-    document.getElementById(id).innerText
-  );
-  btn.innerText="Copiado ✓";
-  btn.classList.add("copiado");
-  setTimeout(()=>{
-    btn.innerText="Copiar";
-    btn.classList.remove("copiado");
-  },1500);
-}
-
-const fileInput=document.getElementById("comprovante");
-const btnEnviar=document.getElementById("btnEnviar");
-
-fileInput.onchange=()=>btnEnviar.disabled=!fileInput.files.length;
-
-/* resumo fictício (mantém compatibilidade) */
+/* 📋 RESUMO DO PEDIDO */
 const resumoDiv = document.getElementById("resumoPedido");
 const cart = JSON.parse(localStorage.getItem("cart")) || {};
 
@@ -247,12 +238,14 @@ if (!Object.keys(cart).length) {
 
   html += "</ul>";
   html += `<p><strong>Subtotal:</strong> ${subtotal.toLocaleString("pt-BR")} Kz</p>`;
-  html += `<p><strong>Taxa (${rate * 100}%):</strong> ${tax.toLocaleString("pt-BR")} Kz</p>`;
+  html += `<p><strong>Taxa (${rate*100}%):</strong> ${tax.toLocaleString("pt-BR")} Kz</p>`;
   html += `<p><strong>Total a pagar:</strong> ${total.toLocaleString("pt-BR")} Kz</p>`;
 
   resumoDiv.innerHTML = html;
 }
-  const fileInput = document.getElementById("comprovante");
+
+/* 📎 CONTROLE DO COMPROVANTE */
+const fileInput = document.getElementById("comprovante");
 const removeBtn = document.getElementById("removeFile");
 const btnEnviar = document.getElementById("btnEnviar");
 
@@ -268,10 +261,25 @@ removeBtn.onclick = () => {
   removeBtn.style.display = "none";
   btnEnviar.disabled = true;
 };
+
+/* 📋 COPIAR IBAN / PIX */
+function copiar(id, btn){
+  navigator.clipboard.writeText(
+    document.getElementById(id).innerText
+  );
+  btn.innerText="Copiado ✓";
+  btn.classList.add("copiado");
+  setTimeout(()=>{
+    btn.innerText="Copiar";
+    btn.classList.remove("copiado");
+  },1500);
+}
+
+/* 🔙 VOLTAR AO CATÁLOGO */
+function voltarCatalogo(){
+  window.location.href="index.html";
+}
 </script>
 
 </body>
 </html>
-
-
-
