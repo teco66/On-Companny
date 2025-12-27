@@ -16,15 +16,21 @@ body{
 }
 h1{text-align:center;margin:16px 0 4px;}
 .subtitle{text-align:center;color:#777;margin-bottom:16px;font-size:13px;}
-.menu{display:flex;justify-content:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
+
+.menu{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  margin-bottom:16px;
+  flex-wrap:wrap;
+}
 .menu button{
   background:none;
   border:none;
   font-weight:bold;
   cursor:pointer;
   color:#555;
-  font-size:15px;
-  letter-spacing:0.3px;
+  font-size:17px; /* 🔹 categorias maiores */
 }
 
 .container{
@@ -54,10 +60,7 @@ h1{text-align:center;margin:16px 0 4px;}
   width:100%;
   aspect-ratio:1/1;
   border-radius:12px;
-  background:#eee;
-  background-size:contain;
-  background-position:center;
-  background-repeat:no-repeat;
+  background:#eee center/contain no-repeat;
   margin-bottom:8px;
 }
 
@@ -77,6 +80,7 @@ h1{text-align:center;margin:16px 0 4px;}
   cursor:pointer;
 }
 
+/* 🔹 CARRINHO DESKTOP */
 .cart{
   width:320px;
   background:#fff;
@@ -87,20 +91,7 @@ h1{text-align:center;margin:16px 0 4px;}
   top:20px;
 }
 .cart ul{list-style:none;padding:0;margin:8px 0;}
-.cart li{
-  font-size:13px;
-  margin-bottom:6px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.info{
-  font-size:12px;
-  color:#666;
-  margin-top:14px;
-  line-height:1.4;
-}
+.cart li{font-size:13px;margin-bottom:6px;}
 
 .finalizar{
   margin-top:12px;
@@ -114,54 +105,31 @@ h1{text-align:center;margin:16px 0 4px;}
   cursor:pointer;
 }
 
-/* 🔹 REDES SOCIAIS NO CARRINHO */
+.info{
+  font-size:12px;
+  color:#666;
+  margin-top:14px;
+  line-height:1.4;
+}
+
+/* 🔹 REDES SOCIAIS */
 .cart-social{
   margin-top:18px;
   padding-top:14px;
   border-top:1px solid #eee;
   font-size:13px;
-  color:#666;
-}
-.cart-social p{
-  margin:0 0 10px;
-  font-weight:bold;
 }
 .cart-social a{
   display:flex;
   align-items:center;
   gap:8px;
-  text-decoration:none;
   color:#555;
+  text-decoration:none;
   margin-bottom:8px;
 }
-.cart-social img{
-  width:18px;
-  height:18px;
-}
+.cart-social img{width:18px;height:18px;}
 
-@media (max-width:900px){
-  .products{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .container{
-    flex-direction:column;
-    padding-bottom:220px; /* espaço para o carrinho fixo */
-  }
-
-  .cart{
-    display:block;
-    position:fixed;
-    bottom:0;
-    left:0;
-    width:100%;
-    max-height:200px;
-    overflow-y:auto;
-    border-radius:20px 20px 0 0;
-    z-index:999;
-  }
-}
-  /* 🔹 BOLHA FLUTUANTE DO CARRINHO (MOBILE) */
+/* 🔹 BOLHA FLUTUANTE (MOBILE) */
 .floating-cart{
   position:fixed;
   bottom:20px;
@@ -175,7 +143,6 @@ h1{text-align:center;margin:16px 0 4px;}
   justify-content:center;
   color:#fff;
   font-size:26px;
-  cursor:pointer;
   z-index:1000;
 }
 .floating-cart span{
@@ -183,21 +150,19 @@ h1{text-align:center;margin:16px 0 4px;}
   top:-6px;
   right:-6px;
   background:#ff4d4d;
-  color:#fff;
-  border-radius:50%;
   width:22px;
   height:22px;
+  border-radius:50%;
+  font-size:12px;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:12px;
 }
 
 /* 🔹 MOBILE */
-@media (max-width:900px){
-  .floating-cart{
-    display:flex;
-  }
+@media(max-width:900px){
+  .products{grid-template-columns:repeat(2,1fr);}
+  .container{flex-direction:column;}
 
   .cart{
     position:fixed;
@@ -205,14 +170,14 @@ h1{text-align:center;margin:16px 0 4px;}
     left:0;
     width:100%;
     max-height:80%;
+    overflow:auto;
+    border-radius:20px 20px 0 0;
     transition:bottom .3s ease;
     z-index:999;
-    border-radius:20px 20px 0 0;
   }
+  .cart.open{bottom:0;}
 
-  .cart.open{
-    bottom:0;
-  }
+  .floating-cart{display:flex;}
 }
 </style>
 </head>
@@ -238,128 +203,101 @@ h1{text-align:center;margin:16px 0 4px;}
     <button class="finalizar" onclick="irParaFinalizar()">Finalizar compra</button>
 
     <div class="info">
-      • Taxa de serviço: 15% abaixo de 150.000 Kz<br>
-      • Taxa de serviço: 10% acima de 150.000 Kz<br>
-      • Taxa alfandegária: 30% (paga na retirada)<br>
-      • Custo de peso: 16.000 Kz por kg<br>
-      • Peso informado antes do envio
+      • Taxa 15% abaixo de 150.000 Kz<br>
+      • Taxa 10% acima de 150.000 Kz
     </div>
 
-    <!-- 🔹 REDES SOCIAIS -->
     <div class="cart-social">
       <p>Nos acompanhe nas redes sociais</p>
-
       <a href="https://www.instagram.com/oncompany25" target="_blank">
         <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png">
         @oncompany25
       </a>
-
       <a href="https://www.tiktok.com/@oncompany25" target="_blank">
         <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png">
         @oncompany25
       </a>
     </div>
-
   </div>
 </div>
 
+<div class="floating-cart" onclick="toggleCart()">
+  🛒 <span id="cartCount">0</span>
+</div>
+
 <script>
-let productsData = [], cart = {};
+let productsData=[], cart={};
 
-function carregarProdutos(data){
-  productsData = data;
-  criarCategorias();
-  render();
-}
+function carregarProdutos(d){productsData=d;criarCategorias();render();}
 
-const api = document.createElement("script");
-api.src =
-  "https://script.google.com/macros/s/AKfycbw0arV3ESUNpLob63yRkE078OnVgiHURTSSKFfeoPqXLcTD6WNATY1q3WTV_8yMJa9j/exec"
-  + "?callback=carregarProdutos&v=" + Date.now();
+const api=document.createElement("script");
+api.src="https://script.google.com/macros/s/AKfycbw0arV3ESUNpLob63yRkE078OnVgiHURTSSKFfeoPqXLcTD6WNATY1q3WTV_8yMJa9j/exec?callback=carregarProdutos";
 document.body.appendChild(api);
 
-const getCategoria = p => p.categoria || p.category || "";
-const getImagem   = p => p.imagem || p.image || "";
-const getNome     = p => p.name || p.nome || p.produto || p.title || "";
+const getCategoria=p=>p.categoria||"";
+const getImagem=p=>p.imagem||"";
+const getNome=p=>p.name||p.nome||"";
 
 function criarCategorias(){
-  const menu = document.getElementById("menuCategorias");
-  menu.innerHTML="";
-  ["Todos",...new Set(productsData.map(getCategoria).filter(c=>c))]
-    .forEach(c=>{
-      const b=document.createElement("button");
-      b.innerText=c;
-      b.onclick=()=>render(c);
-      menu.appendChild(b);
-    });
+  menuCategorias.innerHTML="";
+  ["Todos",...new Set(productsData.map(getCategoria).filter(Boolean))]
+  .forEach(c=>{
+    const b=document.createElement("button");
+    b.innerText=c;
+    b.onclick=()=>render(c);
+    menuCategorias.appendChild(b);
+  });
 }
 
 function render(cat="Todos"){
-  const pDiv=document.getElementById("products");
-  pDiv.innerHTML="";
-  productsData
-    .filter(p=>cat==="Todos"||getCategoria(p)===cat)
-    .forEach((p,index)=>{
-      const d=document.createElement("div");
-      d.className="card";
-      d.innerHTML=`
+  products.innerHTML="";
+  productsData.filter(p=>cat==="Todos"||getCategoria(p)===cat)
+  .forEach((p,i)=>{
+    products.innerHTML+=`
+      <div class="card">
         <div class="card-image" style="background-image:url('${getImagem(p)}')"></div>
         <h3>${getNome(p)}</h3>
         <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
         <div class="controls">
-          <input type="number" min="1" value="1" id="q-${index}">
-          <button onclick="addToCart('${p.id}')">Adicionar</button>
-        </div>`;
-      pDiv.appendChild(d);
-    });
+          <input type="number" min="1" value="1" id="q-${i}">
+          <button onclick="addToCart('${p.id}',${i})">Adicionar</button>
+        </div>
+      </div>`;
+  });
 }
 
-function addToCart(codigo){
-  const p=productsData.find(x=>String(x.id)===String(codigo));
-  if(!p) return;
-
-  const qInput=document.getElementById("q-"+productsData.indexOf(p));
-  const q=parseInt(qInput.value)||1;
-
-  cart[codigo]
-    ? cart[codigo].qty+=q
-    : cart[codigo]={id:codigo,name:getNome(p),price:p.price,qty:q};
-
+function addToCart(id,i){
+  const p=productsData[i];
+  const q=parseInt(document.getElementById("q-"+i).value)||1;
+  cart[id]?cart[id].qty+=q:cart[id]={id,name:getNome(p),price:p.price,qty:q};
   updateCart();
 }
 
 function updateCart(){
-  const items=Object.values(cart);
-  let subtotalCalc=0;
-
-  const html=items.map(i=>{
-    subtotalCalc+=i.price*i.qty;
+  let s=0,q=0;
+  cartItems.innerHTML=Object.values(cart).map(i=>{
+    s+=i.price*i.qty;
+    q+=i.qty;
     return `<li>${i.name} (${i.qty}x)</li>`;
   }).join("");
+  const r=s>=150000?.10:.15;
+  subtotal.innerText=s.toLocaleString("pt-BR");
+  tax.innerText=(s*r).toLocaleString("pt-BR");
+  total.innerText=(s*(1+r)).toLocaleString("pt-BR");
+  taxPercent.innerText=r*100+"%";
+  cartCount.innerText=q;
+}
 
-  const rate=subtotalCalc>=150000?0.10:0.15;
-  cartItems.innerHTML=html;
-  subtotal.innerText=subtotalCalc.toLocaleString("pt-BR");
-  tax.innerText=(subtotalCalc*rate).toLocaleString("pt-BR");
-  total.innerText=(subtotalCalc*(1+rate)).toLocaleString("pt-BR");
-  taxPercent.innerText=(rate*100)+"%";
+function toggleCart(){
+  document.querySelector(".cart").classList.toggle("open");
 }
 
 function irParaFinalizar(){
-  if(!Object.keys(cart).length){
-    alert("Adicione produtos ao carrinho");
-    return;
-  }
-  localStorage.setItem("cart", JSON.stringify(cart));
-  window.location.href = "finalizar.html";
+  if(!Object.keys(cart).length)return alert("Adicione produtos");
+  localStorage.setItem("cart",JSON.stringify(cart));
+  window.location.href="finalizar.html";
 }
 </script>
-<div class="floating-cart" id="floatingCart" onclick="toggleCart()">
-  🛒
-  <span id="cartCount">0</span>
-</div>
-  
+
 </body>
 </html>
-
-
