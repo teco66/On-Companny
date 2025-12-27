@@ -61,20 +61,11 @@ h1{text-align:center;margin-top:0}
   cursor:pointer;
   font-size:12px;
 }
-.copy-btn.copiado{background:#4caf50}
 
 label{display:block;font-size:14px;margin-bottom:6px}
-input{
-  width:100%;
-  padding:10px;
-  border-radius:10px;
-  border:1px solid #ccc;
-  font-size:14px;
-}
-input[type="file"]{padding:6px}
+input{width:100%;padding:10px;border-radius:10px;border:1px solid #ccc}
 
-button.enviar,
-button.voltar{
+button.enviar,button.voltar{
   width:100%;
   padding:14px;
   border:none;
@@ -84,21 +75,8 @@ button.voltar{
   font-size:16px;
   cursor:pointer;
 }
-button.enviar:disabled{
-  background:#aaa;
-  cursor:not-allowed;
-}
-button.voltar{
-  margin-top:10px;
-  font-size:14px;
-}
-
-.footer{
-  text-align:center;
-  font-size:13px;
-  color:#666;
-  margin-top:14px;
-}
+button.enviar:disabled{background:#aaa}
+button.voltar{margin-top:10px;font-size:14px}
 </style>
 </head>
 
@@ -108,79 +86,26 @@ button.voltar{
 
 <h1>Finalize seu pedido</h1>
 
-<!-- 📦 RESUMO -->
 <div class="section">
   <h2>📦 Resumo do pedido</h2>
   <div class="resumo" id="resumoPedido">Carregando...</div>
 </div>
 
-<!-- 💳 PAGAMENTO -->
-<div class="section">
-  <h2>💳 Dados para pagamento</h2>
-  <div class="pagamento">
-
-    <strong>Angola – Transferência Bancária</strong>
-
-    <div class="linha">
-      <span>B.F.A – IBAN</span>
-      <code id="iban1">000600002246601030178</code>
-      <button class="copy-btn" onclick="copiar('iban1',this)">Copiar</button>
-    </div>
-
-    <div class="linha">
-      <span>B.A.I – IBAN</span>
-      <code id="iban2">004000000242539210149</code>
-      <button class="copy-btn" onclick="copiar('iban2',this)">Copiar</button>
-    </div>
-
-    <div class="linha">
-      <span>BIC – IBAN</span>
-      <code id="iban3">005100005439922710131</code>
-      <button class="copy-btn" onclick="copiar('iban3',this)">Copiar</button>
-    </div>
-
-    <div class="linha">
-      <span>Millennium – IBAN</span>
-      <code id="iban4">005500001693032510136</code>
-      <button class="copy-btn" onclick="copiar('iban4',this)">Copiar</button>
-    </div>
-
-    <div class="linha">
-      <span>Banco Sol – IBAN</span>
-      <code id="iban5">004400009979788510185</code>
-      <button class="copy-btn" onclick="copiar('iban5',this)">Copiar</button>
-    </div>
-
-    <hr style="margin:14px 0">
-
-    <strong>Brasil – PIX</strong>
-
-    <div class="linha">
-      <span>Chave PIX</span>
-      <code id="pix">43604725000100</code>
-      <button class="copy-btn" onclick="copiar('pix',this)">Copiar</button>
-    </div>
-
-  </div>
-</div>
-
-<!-- 👤 DADOS -->
 <div class="section">
   <h2>👤 Dados do cliente</h2>
-  <label>Nome completo *</label>
+  <label>Nome *</label>
   <input id="nome">
   <label>WhatsApp *</label>
   <input id="whatsapp">
-  <label>Cidade / Província *</label>
+  <label>Cidade *</label>
   <input id="cidade">
 </div>
 
-<!-- 📎 COMPROVANTE -->
 <div class="section">
-  <h2>📎 Comprovante de pagamento *</h2>
+  <h2>📎 Comprovante *</h2>
   <div style="position:relative">
-    <input type="file" id="comprovante" accept=".jpg,.jpeg,.png,.pdf">
-    <button type="button" id="removeFile"
+    <input type="file" id="comprovante">
+    <button id="removeFile" type="button"
       style="display:none;position:absolute;right:10px;top:8px;
       border:none;background:#ff4d4d;color:#fff;border-radius:50%;
       width:22px;height:22px;cursor:pointer">×</button>
@@ -188,118 +113,80 @@ button.voltar{
 </div>
 
 <button class="enviar" id="btnEnviar" disabled>Enviar pedido</button>
-<button class="voltar" onclick="window.location.href='index.html'">← Voltar ao catálogo</button>
-
-<div class="footer">
-  O envio só é liberado após anexar o comprovante.
-</div>
+<button class="voltar" onclick="location.href='index.html'">← Voltar</button>
 
 </div>
 
 <script>
-/* 📦 RESUMO */
+// ================== RESUMO ==================
 const resumoDiv = document.getElementById("resumoPedido");
-
 let cart = {};
+
 try {
   cart = JSON.parse(localStorage.getItem("cart")) || {};
-} catch (e) {
-  cart = {};
-}
+} catch {}
 
-if(!Object.keys(cart).length){
-  resumoDiv.innerHTML="Carrinho vazio.";
-}else{
-  let subtotal=0;
-  let html="<ul>";
+if (!Object.keys(cart).length) {
+  resumoDiv.innerHTML = "Carrinho vazio.";
+} else {
+  let subtotal = 0;
+  let html = "<ul>";
   Object.values(cart).forEach(i=>{
-    subtotal+=i.price*i.qty;
-    html+=`<li>${i.name} (${i.qty}x)</li>`;
+    subtotal += i.price * i.qty;
+    html += `<li>${i.name} (${i.qty}x)</li>`;
   });
-  const rate=subtotal>=150000?0.10:0.15;
-  const tax=subtotal*rate;
-  const total=subtotal+tax;
-  html+="</ul>";
-  html+=`<p><strong>Subtotal:</strong> ${subtotal.toLocaleString("pt-BR")} Kz</p>`;
-  html+=`<p><strong>Taxa (${rate*100}%):</strong> ${tax.toLocaleString("pt-BR")} Kz</p>`;
-  html+=`<p><strong>Total a pagar:</strong> ${total.toLocaleString("pt-BR")} Kz</p>`;
-  resumoDiv.innerHTML=html;
+  const rate = subtotal >= 150000 ? 0.10 : 0.15;
+  html += `</ul>
+    <p><strong>Subtotal:</strong> ${subtotal.toLocaleString("pt-BR")} Kz</p>
+    <p><strong>Taxa:</strong> ${(subtotal*rate).toLocaleString("pt-BR")} Kz</p>
+    <p><strong>Total:</strong> ${(subtotal*(1+rate)).toLocaleString("pt-BR")} Kz</p>`;
+  resumoDiv.innerHTML = html;
 }
 
-/* 📋 COPIAR */
-function copiar(id,btn){
-  navigator.clipboard.writeText(document.getElementById(id).innerText);
-  btn.innerText="Copiado ✓";
-  btn.classList.add("copiado");
-  setTimeout(()=>{btn.innerText="Copiar";btn.classList.remove("copiado")},1500);
+// ================== VALIDAÇÃO ==================
+const fileInput = document.getElementById("comprovante");
+const removeBtn = document.getElementById("removeFile");
+const btnEnviar = document.getElementById("btnEnviar");
+
+function validar(){
+  btnEnviar.disabled = !(
+    nome.value.trim() &&
+    whatsapp.value.trim() &&
+    cidade.value.trim() &&
+    fileInput.files.length
+  );
 }
 
-/* 📎 COMPROVANTE (COM X) */
-const fileInput=document.getElementById("comprovante");
-const removeBtn=document.getElementById("removeFile");
-const btnEnviar=document.getElementById("btnEnviar");
-
-function validarFormulario() {
-  const nome = document.getElementById("nome").value.trim();
-  const whatsapp = document.getElementById("whatsapp").value.trim();
-  const cidade = document.getElementById("cidade").value.trim();
-
-  const ok =
-    nome &&
-    whatsapp &&
-    cidade &&
-    fileInput.files.length;
-
-  btnEnviar.disabled = !ok;
-}
-
-fileInput.onchange = () => {
-  if (fileInput.files.length) {
-    removeBtn.style.display = "block";
-  }
-  validarFormulario();
-};
-
-["nome","whatsapp","cidade"].forEach(id => {
-  document.getElementById(id).addEventListener("input", validarFormulario);
+["nome","whatsapp","cidade"].forEach(id=>{
+  document.getElementById(id).addEventListener("input", validar);
 });
 
-removeBtn.onclick = () => {
-  fileInput.value = "";
-  removeBtn.style.display = "none";
-  btnEnviar.disabled = true;
+fileInput.onchange = ()=>{
+  if(fileInput.files.length) removeBtn.style.display="block";
+  validar();
 };
-removeBtn.onclick=()=>{
+
+removeBtn.onclick = ()=>{
   fileInput.value="";
-  btnEnviar.disabled=true;
   removeBtn.style.display="none";
+  btnEnviar.disabled=true;
 };
 
-/* 🚀 ENVIO */
-btnEnviar.onclick = async () => {
-  const nome = document.getElementById("nome").value.trim();
-  const whatsapp = document.getElementById("whatsapp").value.trim();
-  const cidade = document.getElementById("cidade").value.trim();
+// ================== ENVIO ==================
+btnEnviar.onclick = ()=>{
   const file = fileInput.files[0];
-
-  if (!nome || !whatsapp || !cidade || !file) {
-    alert("Preencha todos os campos obrigatórios e anexe o comprovante.");
-    return;
-  }
-
   let subtotal = 0;
-  const itens = Object.values(cart).map(i => {
+  const itens = Object.values(cart).map(i=>{
     subtotal += i.price * i.qty;
     return `${i.id}:${i.qty}`;
   }).join(" | ");
 
   const reader = new FileReader();
-
-  reader.onload = async () => {
+  reader.onload = async ()=>{
     const payload = {
-      nome,
-      whatsapp,
-      cidade,
+      nome: nome.value,
+      whatsapp: whatsapp.value,
+      cidade: cidade.value,
       itens,
       subtotal,
       file: reader.result.split(",")[1],
@@ -307,46 +194,22 @@ btnEnviar.onclick = async () => {
       fileType: file.type
     };
 
-    try {
-      const resp = await fetch("https://script.google.com/macros/s/AKfycbzFIvttvEI1tXGlIByslmdV5eyBUFDz0SrZPLlwbsO3E5Sk2aiyy2SbVNuNWP8Rr81p/exec", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(payload)
-});
-  }
-);
+    const resp = await fetch("SEU_LINK_DO_APPS_SCRIPT",{
+      method:"POST",
+      body:new URLSearchParams({ data: JSON.stringify(payload) })
+    });
 
-const text = await resp.text();
-const result = JSON.parse(text);
-
-
-     if (result.status === "ok") {
-  localStorage.removeItem("cart");
-  window.location.href = "sucesso.html";
-} else {
-  alert("ERRO DO SERVIDOR:\n" + (result.msg || "sem mensagem"));
-}
-
-    } catch (err) {
-      alert("Falha na comunicação. Verifique sua internet.");
+    const result = JSON.parse(await resp.text());
+    if(result.status==="ok"){
+      localStorage.removeItem("cart");
+      location.href="sucesso.html";
+    }else{
+      alert(result.msg || "Erro no servidor");
     }
   };
-
   reader.readAsDataURL(file);
 };
-
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
