@@ -16,7 +16,13 @@ body{
 }
 h1{text-align:center;margin:16px 0 4px;}
 .subtitle{text-align:center;color:#777;margin-bottom:16px;font-size:13px;}
-.menu{display:flex;justify-content:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
+.menu{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  margin-bottom:16px;
+  flex-wrap:wrap;
+}
 .menu button{
   background:none;
   border:none;
@@ -76,7 +82,7 @@ h1{text-align:center;margin:16px 0 4px;}
   cursor:pointer;
 }
 
-/* 🧾 CARRINHO DESKTOP */
+/* 🧾 CARRINHO DESKTOP (INALTERADO) */
 .cart{
   width:320px;
   background:#fff;
@@ -87,10 +93,7 @@ h1{text-align:center;margin:16px 0 4px;}
   top:20px;
 }
 .cart ul{list-style:none;padding:0;margin:8px 0;}
-.cart li{
-  font-size:13px;
-  margin-bottom:6px;
-}
+.cart li{font-size:13px;margin-bottom:6px;}
 
 .info{
   font-size:12px;
@@ -111,7 +114,7 @@ h1{text-align:center;margin:16px 0 4px;}
   cursor:pointer;
 }
 
-/* 📱 CARRINHO MOBILE */
+/* 📱 BARRA DE CARRINHO MOBILE */
 .mobile-cart{
   display:none;
   position:fixed;
@@ -125,7 +128,7 @@ h1{text-align:center;margin:16px 0 4px;}
 }
 .mobile-cart button{
   width:100%;
-  padding:12px;
+  padding:14px;
   border:none;
   border-radius:12px;
   background:#cbb69c;
@@ -153,7 +156,7 @@ h1{text-align:center;margin:16px 0 4px;}
 <div class="container">
   <div class="products" id="products"></div>
 
-  <!-- 🧾 CARRINHO DESKTOP -->
+  <!-- CARRINHO DESKTOP -->
   <div class="cart">
     <h2>Seu carrinho</h2>
     <ul id="cartItems"></ul>
@@ -173,7 +176,7 @@ h1{text-align:center;margin:16px 0 4px;}
   </div>
 </div>
 
-<!-- 📱 BARRA FIXA MOBILE -->
+<!-- 📱 CARRINHO MOBILE -->
 <div class="mobile-cart">
   <button onclick="irParaFinalizar()">
     Finalizar compra • <span id="mobileTotal">0</span> Kz
@@ -229,27 +232,30 @@ function render(cat="Todos"){
 function addToCart(id,i){
   const p=productsData.find(x=>String(x.id)===String(id));
   const q=parseInt(document.getElementById("q-"+i).value)||1;
-  cart[id]?cart[id].qty+=q:cart[id]={...p,qty:q};
+  cart[id]?cart[id].qty+=q:cart[id]={id:p.id,name:p.name,price:p.price,qty:q};
   updateCart();
 }
 
 function updateCart(){
-  let subtotal=0;
+  let subtotalCalc=0;
   cartItems.innerHTML=Object.values(cart).map(i=>{
-    subtotal+=i.price*i.qty;
+    subtotalCalc+=i.price*i.qty;
     return `<li>${i.name} (${i.qty}x)</li>`;
   }).join("");
 
-  const rate=subtotal>=150000?0.10:0.15;
-  subtotal.innerText=subtotal.toLocaleString("pt-BR");
-  tax.innerText=(subtotal*rate).toLocaleString("pt-BR");
-  total.innerText=(subtotal*(1+rate)).toLocaleString("pt-BR");
+  const rate=subtotalCalc>=150000?0.10:0.15;
+  subtotal.innerText=subtotalCalc.toLocaleString("pt-BR");
+  tax.innerText=(subtotalCalc*rate).toLocaleString("pt-BR");
+  total.innerText=(subtotalCalc*(1+rate)).toLocaleString("pt-BR");
   taxPercent.innerText=(rate*100)+"%";
-  mobileTotal.innerText=(subtotal*(1+rate)).toLocaleString("pt-BR");
+  mobileTotal.innerText=(subtotalCalc*(1+rate)).toLocaleString("pt-BR");
 }
 
 function irParaFinalizar(){
-  if(!Object.keys(cart).length){alert("Carrinho vazio");return;}
+  if(!Object.keys(cart).length){
+    alert("Adicione produtos ao carrinho");
+    return;
+  }
   localStorage.setItem("cart",JSON.stringify(cart));
   window.location.href="finalizar.html";
 }
