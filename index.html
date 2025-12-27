@@ -116,60 +116,6 @@ h1{text-align:center;margin:16px 0 4px;}
   .products{grid-template-columns:repeat(2,1fr);}
   .cart{display:none;}
 }
-
-.floating-cart{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  width:60px;
-  height:60px;
-  background:#cbb69c;
-  border-radius:50%;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  font-size:26px;
-  cursor:pointer;
-  z-index:999;
-}
-.floating-cart span{
-  position:absolute;
-  top:-6px;
-  right:-6px;
-  background:#ff4d4d;
-  color:#fff;
-  border-radius:50%;
-  width:22px;
-  height:22px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:12px;
-}
-@media (max-width:900px){
-  .floating-cart{display:flex;}
-}
-
-.cart-modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.4);
-  display:none;
-  z-index:998;
-}
-.cart-mobile{
-  position:absolute;
-  right:0;
-  top:0;
-  width:85%;
-  max-width:360px;
-  height:100%;
-  background:#fff;
-  padding:20px;
-  border-radius:20px 0 0 20px;
-  overflow:auto;
-}
 </style>
 </head>
 
@@ -191,7 +137,8 @@ h1{text-align:center;margin:16px 0 4px;}
     <p>Taxa (<span id="taxPercent">15%</span>): <strong><span id="tax">0</span> Kz</strong></p>
     <p>Total: <strong><span id="total">0</span> Kz</strong></p>
 
-    <button class="finalizar" onclick="finalizarCompra()">Finalizar compra</button>
+    <!-- ✅ BOTÃO CORRETO -->
+    <button class="finalizar" onclick="irParaFinalizar()">Finalizar compra</button>
 
     <div class="info">
       • Taxa de serviço: 15% abaixo de 150.000 Kz<br>
@@ -200,22 +147,6 @@ h1{text-align:center;margin:16px 0 4px;}
       • Custo de peso: 16.000 Kz por kg<br>
       • Peso informado antes do envio
     </div>
-  </div>
-</div>
-
-<div class="floating-cart" id="floatingCart">🛒 <span id="cartCount">0</span></div>
-
-<div class="cart-modal" id="cartModal">
-  <div class="cart-mobile">
-    <h2>Seu carrinho</h2>
-    <ul id="cartItemsMobile"></ul>
-
-    <p>Subtotal: <strong><span id="subtotalMobile">0</span> Kz</strong></p>
-    <p>Taxa (<span id="taxPercentMobile">15%</span>): <strong><span id="taxMobile">0</span> Kz</strong></p>
-    <p>Total: <strong><span id="totalMobile">0</span> Kz</strong></p>
-
-    <button class="finalizar" onclick="window.location.href='finalizar.html'">Finalizar compra</button>
-    <button class="finalizar" style="background:#999" onclick="fecharCarrinho()">Continuar comprando</button>
   </div>
 </div>
 
@@ -228,7 +159,6 @@ function carregarProdutos(data){
   render();
 }
 
-/* 🔹 JSONP PARA CARREGAR PRODUTOS */
 const api = document.createElement("script");
 api.src =
   "https://script.google.com/macros/s/AKfycbw0arV3ESUNpLob63yRkE078OnVgiHURTSSKFfeoPqXLcTD6WNATY1q3WTV_8yMJa9j/exec"
@@ -241,26 +171,25 @@ const getNome     = p => p.name || p.nome || p.produto || p.title || "";
 
 function criarCategorias(){
   const menu = document.getElementById("menuCategorias");
-  menu.innerHTML = "";
-  ["Todos", ...new Set(productsData.map(getCategoria).filter(c => c))]
-    .forEach(c => {
-      const b = document.createElement("button");
-      b.innerText = c;
-      b.onclick = () => render(c);
+  menu.innerHTML="";
+  ["Todos",...new Set(productsData.map(getCategoria).filter(c=>c))]
+    .forEach(c=>{
+      const b=document.createElement("button");
+      b.innerText=c;
+      b.onclick=()=>render(c);
       menu.appendChild(b);
     });
 }
 
 function render(cat="Todos"){
-  const pDiv = document.getElementById("products");
-  pDiv.innerHTML = "";
-
+  const pDiv=document.getElementById("products");
+  pDiv.innerHTML="";
   productsData
-    .filter(p => cat==="Todos" || getCategoria(p)===cat)
-    .forEach((p, index) => {
-      const d = document.createElement("div");
-      d.className = "card";
-      d.innerHTML = `
+    .filter(p=>cat==="Todos"||getCategoria(p)===cat)
+    .forEach((p,index)=>{
+      const d=document.createElement("div");
+      d.className="card";
+      d.innerHTML=`
         <div class="card-image" style="background-image:url('${getImagem(p)}')"></div>
         <h3>${getNome(p)}</h3>
         <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
@@ -273,120 +202,46 @@ function render(cat="Todos"){
 }
 
 function addToCart(codigo){
-  const p = productsData.find(x => String(x.id) === String(codigo));
-  if (!p) return;
+  const p=productsData.find(x=>String(x.id)===String(codigo));
+  if(!p) return;
 
-  const qInput = document.getElementById(
-    "q-" + productsData.indexOf(p)
-  );
-  const q = parseInt(qInput.value) || 1;
+  const qInput=document.getElementById("q-"+productsData.indexOf(p));
+  const q=parseInt(qInput.value)||1;
 
   cart[codigo]
-    ? cart[codigo].qty += q
-    : cart[codigo] = {
-        id: codigo,
-        name: getNome(p),
-        price: p.price,
-        qty: q
-      };
+    ? cart[codigo].qty+=q
+    : cart[codigo]={id:codigo,name:getNome(p),price:p.price,qty:q};
 
-  updateCart();
-}
-
-function removeFromCart(codigo){
-  delete cart[codigo];
   updateCart();
 }
 
 function updateCart(){
-  const keys = Object.keys(cart);
+  const items=Object.values(cart);
+  let subtotalCalc=0;
 
-  let subtotalCalc = 0;
-
-  const html = keys.map(codigo => {
-    const i = cart[codigo];
-    subtotalCalc += i.price * i.qty;
-
-    return `
-      <li>
-        ${i.name} (${i.qty}x)
-        <button onclick="removeFromCart('${codigo}')">🗑</button>
-      </li>
-    `;
+  const html=items.map(i=>{
+    subtotalCalc+=i.price*i.qty;
+    return `<li>${i.name} (${i.qty}x)</li>`;
   }).join("");
 
-  const rate = subtotalCalc >= 150000 ? 0.10 : 0.15;
-  const taxCalc = subtotalCalc * rate;
-  const totalCalc = subtotalCalc + taxCalc;
-
-  cartItems.innerHTML = cartItemsMobile.innerHTML = html;
-
-  subtotal.innerText = subtotalMobile.innerText =
-    subtotalCalc.toLocaleString("pt-BR");
-
-  tax.innerText = taxMobile.innerText =
-    taxCalc.toLocaleString("pt-BR");
-
-  total.innerText = totalMobile.innerText =
-    totalCalc.toLocaleString("pt-BR");
-
-  taxPercent.innerText = taxPercentMobile.innerText =
-    (rate * 100) + "%";
-
-  cartCount.innerText = keys.reduce(
-    (s, k) => s + cart[k].qty,
-    0
-  );
-
-  floatingCart.style.display = keys.length ? "flex" : "none";
+  const rate=subtotalCalc>=150000?0.10:0.15;
+  cartItems.innerHTML=html;
+  subtotal.innerText=subtotalCalc.toLocaleString("pt-BR");
+  tax.innerText=(subtotalCalc*rate).toLocaleString("pt-BR");
+  total.innerText=(subtotalCalc*(1+rate)).toLocaleString("pt-BR");
+  taxPercent.innerText=(rate*100)+"%";
 }
 
-/* 🔥 FETCH RECOLOCADO (ENVIO PARA PLANILHA) */
-function finalizarCompra(){
-
-  const itensCodigo = Object.values(cart)
-    .map(i => `${i.id}:${i.qty}`)
-    .join(" | ");
-
-  const subtotal = Object.values(cart)
-    .reduce((s,i)=>s+i.price*i.qty,0);
-
-  const rate = subtotal>=150000 ? 0.10 : 0.15;
-  const total = Math.round(subtotal * (1 + rate));
-
-  // ENVIO INVISÍVEL PARA O APPS SCRIPT
-  fetch("https://script.google.com/macros/s/AKfycbw0arV3ESUNpLob63yRkE078OnVgiHURTSSKFfeoPqXLcTD6WNATY1q3WTV_8yMJa9j/exec", {
-    method: "POST",
-    body: JSON.stringify({
-      itens: itensCodigo,
-      total: total
-    })
-  });
-
-  // CONTINUA IGUAL: ABRE O FORMS
-  const resumo = Object.values(cart)
-    .map(i=>`${i.name} (${i.qty}x)`)
-    .join(", ");
-
-  window.open(
-    "https://docs.google.com/forms/d/e/1FAIpQLSd9A2GujhNfiwqwT-hQSiVuE7k1obWRfQexdSaIBndspmmjcA/viewform?usp=pp_url&entry.1279682989="
-    + encodeURIComponent(resumo),
-    "_blank"
-  );
+/* ✅ FUNÇÃO NOVA, NO LUGAR CERTO */
+function irParaFinalizar(){
+  if(!Object.keys(cart).length){
+    alert("Adicione produtos ao carrinho antes de finalizar.");
+    return;
+  }
+  localStorage.setItem("cart", JSON.stringify(cart));
+  window.location.href="finalizar.html";
 }
-
-function fecharCarrinho(){
-  cartModal.style.display="none";
-}
-floatingCart.onclick = () => cartModal.style.display="block";
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
