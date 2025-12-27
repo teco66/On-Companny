@@ -292,12 +292,12 @@ const text = await resp.text();
 const result = JSON.parse(text);
 
 
-      if (result.status === "ok") {
-        localStorage.removeItem("cart");
-        window.location.href = "sucesso.html";
-      } else {
-        alert("Erro ao enviar pedido. Tente novamente.");
-      }
+     if (result.status === "ok") {
+  localStorage.removeItem("cart");
+  window.location.href = "sucesso.html";
+} else {
+  alert("ERRO DO SERVIDOR:\n" + (result.msg || "sem mensagem"));
+}
 
     } catch (err) {
       alert("Falha na comunicação. Verifique sua internet.");
@@ -311,5 +311,6 @@ const result = JSON.parse(text);
 
 </body>
 </html>
+
 
 
