@@ -103,7 +103,19 @@ h1{text-align:center;margin:16px 0 4px;}
 }
 
 .cart ul{list-style:none;padding:0;margin:8px 0;}
-.cart li{font-size:13px;margin-bottom:6px;}
+.cart li{
+  font-size:13px;
+  margin-bottom:6px;
+  display:flex;
+  justify-content:space-between;
+}
+
+.info{
+  font-size:12px;
+  color:#666;
+  margin-top:14px;
+  line-height:1.4;
+}
 
 .finalizar{
   margin-top:12px;
@@ -116,6 +128,24 @@ h1{text-align:center;margin:16px 0 4px;}
   font-size:15px;
   cursor:pointer;
 }
+
+/* ===== REDES ===== */
+.cart-social{
+  margin-top:18px;
+  padding-top:14px;
+  border-top:1px solid #eee;
+  font-size:13px;
+}
+.cart-social p{margin:0 0 10px;font-weight:bold;}
+.cart-social a{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  text-decoration:none;
+  color:#555;
+  margin-bottom:8px;
+}
+.cart-social img{width:18px;height:18px;}
 
 /* ===== BOLHA ===== */
 .floating-cart{
@@ -185,10 +215,31 @@ h1{text-align:center;margin:16px 0 4px;}
     <h2>Seu carrinho</h2>
     <ul id="cartItems"></ul>
 
+    <p>Subtotal: <strong><span id="subtotal">0</span> Kz</strong></p>
+    <p>Taxa (<span id="taxPercent">15%</span>): <strong><span id="tax">0</span> Kz</strong></p>
     <p>Total: <strong><span id="total">0</span> Kz</strong></p>
 
+    <!-- ✅ INFORMAÇÕES RESTAURADAS -->
+    <div class="info">
+      • Taxa de serviço: 15% abaixo de 150.000 Kz<br>
+      • Taxa de serviço: 10% acima de 150.000 Kz<br>
+      • Taxa alfandegária: 30% (paga na retirada)<br>
+      • Custo de peso: 16.000 Kz por kg<br>
+      • Peso informado antes do envio
+    </div>
+
     <button class="finalizar" onclick="irParaFinalizar()">Finalizar compra</button>
-    <button class="finalizar" style="background:#aaa" onclick="toggleCart()">← Voltar</button>
+    <button class="finalizar" style="background:#aaa" onclick="toggleCart()">← Voltar ao catálogo</button>
+
+    <div class="cart-social">
+      <p>Nos acompanhe nas redes sociais</p>
+      <a href="https://www.instagram.com/oncompany25" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png">@oncompany25
+      </a>
+      <a href="https://www.tiktok.com/@oncompany25" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png">@oncompany25
+      </a>
+    </div>
   </div>
 </div>
 
@@ -249,13 +300,17 @@ function addToCart(id,i){
 }
 
 function updateCart(){
-  let subtotal=0,count=0;
+  let subtotalCalc=0,count=0;
   cartItems.innerHTML=Object.values(cart).map(i=>{
-    subtotal+=i.price*i.qty;
+    subtotalCalc+=i.price*i.qty;
     count+=i.qty;
     return `<li>${i.name} (${i.qty}x)</li>`;
   }).join("");
-  total.textContent=subtotal.toLocaleString("pt-BR");
+  const rate=subtotalCalc>=150000?0.10:0.15;
+  subtotal.textContent=subtotalCalc.toLocaleString("pt-BR");
+  tax.textContent=(subtotalCalc*rate).toLocaleString("pt-BR");
+  total.textContent=(subtotalCalc*(1+rate)).toLocaleString("pt-BR");
+  taxPercent.textContent=(rate*100)+"%";
   cartCount.textContent=count;
 }
 
@@ -264,7 +319,7 @@ function toggleCart(){
 }
 
 function irParaFinalizar(){
-  if(!Object.keys(cart).length) return alert("Adicione produtos");
+  if(!Object.keys(cart).length)return alert("Adicione produtos");
   localStorage.setItem("cart",JSON.stringify(cart));
   window.location.href="finalizar.html";
 }
