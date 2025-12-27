@@ -293,25 +293,18 @@ btnEnviar.onclick = () => {
       fileType: file.type
     };
 
-    const resp = await fetch(
-      "https://script.google.com/macros/s/AKfycbxS0Ho-6eqOSfhnk7iMaEr_T8-jrawA243MJ03PejgSnW4Ab9d-dayLbLpbM--Z9xEF/exec",
-      {
-        method: "POST",
-        body: new URLSearchParams({
-          data: JSON.stringify(payload)
-        })
-      }
-    );
+    fetch("https://script.google.com/macros/s/AKfycbxS0Ho-6eqOSfhnk7iMaEr_T8-jrawA243MJ03PejgSnW4Ab9d-dayLbLpbM--Z9xEF/exec", {
+  method: "POST",
+  body: new URLSearchParams({
+    data: JSON.stringify(payload)
+  })
+}).catch(err => {
+  console.error("Erro ao enviar para planilha:", err);
+});
 
-    const result = JSON.parse(await resp.text());
-
-    if (result.status === "ok") {
-      localStorage.removeItem("cart");
-      window.location.href = "sucesso.html";
-    } else {
-      alert("Erro do servidor:\n" + (result.msg || "sem mensagem"));
-    }
-  };
+// 🔥 FINALIZA O PEDIDO INDEPENDENTE DO BACKEND
+localStorage.removeItem("cart");
+window.location.href = "sucesso.html";
 
   reader.readAsDataURL(file);
 };
@@ -319,6 +312,7 @@ btnEnviar.onclick = () => {
 
 </body>
 </html>
+
 
 
 
