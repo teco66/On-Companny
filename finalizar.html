@@ -3,259 +3,256 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Finalizar Pedido • On Company</title>
+<title>Catálogo On Company</title>
 
 <style>
-*{box-sizing:border-box}
+*{box-sizing:border-box;}
 body{
   margin:0;
   font-family:Arial, sans-serif;
   background:linear-gradient(180deg,#fdf9f4,#f5efe8);
   color:#333;
+  overflow-x:hidden;
 }
-.container{
-  max-width:760px;
-  margin:40px auto;
-  background:#fff;
-  border-radius:18px;
-  padding:24px;
-  box-shadow:0 10px 25px rgba(0,0,0,.08);
-}
-h1{text-align:center;margin-top:0}
-.section{margin-bottom:30px}
-.section h2{font-size:18px;margin-bottom:12px}
-
-.resumo{
-  background:#faf7f2;
-  padding:16px;
-  border-radius:12px;
-  font-size:14px;
-}
-
-.pagamento{
-  background:#f0f7f4;
-  border:1px solid #cfe7dd;
-  padding:16px;
-  border-radius:12px;
-  font-size:14px;
-}
-.pagamento .linha{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  margin:6px 0;
-  align-items:center;
-}
-.pagamento code{
-  background:#fff;
-  padding:6px 8px;
-  border-radius:6px;
-  font-size:13px;
-}
-.copy-btn{
-  padding:6px 10px;
+h1{text-align:center;margin:16px 0 4px;}
+.subtitle{text-align:center;color:#777;margin-bottom:16px;font-size:13px;}
+.menu{display:flex;justify-content:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
+.menu button{
+  background:none;
   border:none;
-  border-radius:8px;
-  background:#cbb69c;
-  color:#fff;
+  font-weight:bold;
   cursor:pointer;
-  font-size:12px;
-}
-
-label{display:block;font-size:14px;margin-bottom:6px}
-input{
-  width:100%;
-  padding:10px;
-  border-radius:10px;
-  border:1px solid #ccc;
-  font-size:14px;
-}
-input[type="file"]{padding:6px}
-
-button.enviar,
-button.voltar{
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:14px;
-  background:#cbb69c;
-  color:#fff;
+  color:#555;
   font-size:16px;
-  cursor:pointer;
-}
-button.enviar:disabled{
-  background:#aaa;
-  cursor:not-allowed;
-}
-button.voltar{
-  margin-top:10px;
-  font-size:14px;
 }
 
-.footer{
-  text-align:center;
+.container{
+  display:flex;
+  gap:24px;
+  padding:24px;
+  max-width:1400px;
+  margin:0 auto;
+  align-items:flex-start;
+}
+
+.products{
+  flex:1;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+}
+
+.card{
+  background:#fff;
+  border-radius:16px;
+  padding:12px;
+  box-shadow:0 8px 18px rgba(0,0,0,.06);
+}
+
+.card-image{
+  width:100%;
+  aspect-ratio:1/1;
+  border-radius:12px;
+  background:#eee;
+  background-size:contain;
+  background-position:center;
+  background-repeat:no-repeat;
+  margin-bottom:8px;
+}
+
+.card h3{font-size:14px;margin:6px 0 4px;}
+.card strong{font-size:13px;}
+
+.controls{display:flex;gap:8px;margin-top:8px;}
+.controls input{width:50px;padding:4px;}
+.controls button{
+  flex:1;
+  background:#cbb69c;
+  border:none;
+  border-radius:10px;
+  color:#fff;
+  padding:6px;
   font-size:13px;
+  cursor:pointer;
+}
+
+/* 🧾 CARRINHO DESKTOP */
+.cart{
+  width:320px;
+  background:#fff;
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 12px 28px rgba(0,0,0,.10);
+  position:sticky;
+  top:20px;
+}
+.cart ul{list-style:none;padding:0;margin:8px 0;}
+.cart li{
+  font-size:13px;
+  margin-bottom:6px;
+}
+
+.info{
+  font-size:12px;
   color:#666;
   margin-top:14px;
+  line-height:1.4;
+}
+
+.finalizar{
+  margin-top:12px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:#cbb69c;
+  color:#fff;
+  font-size:15px;
+  cursor:pointer;
+}
+
+/* 📱 CARRINHO MOBILE */
+.mobile-cart{
+  display:none;
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#fff;
+  box-shadow:0 -4px 16px rgba(0,0,0,.15);
+  padding:12px 16px;
+  z-index:999;
+}
+.mobile-cart button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:#cbb69c;
+  color:#fff;
+  font-size:15px;
+}
+
+/* 📱 RESPONSIVO */
+@media (max-width:900px){
+  .products{grid-template-columns:repeat(2,1fr);}
+  .cart{display:none;}
+  .mobile-cart{display:block;}
+  body{padding-bottom:90px;}
 }
 </style>
 </head>
 
 <body>
 
+<h1>Catálogo On Company</h1>
+<p class="subtitle">Escolha seus produtos e finalize com segurança</p>
+
+<div class="menu" id="menuCategorias"></div>
+
 <div class="container">
+  <div class="products" id="products"></div>
 
-<h1>Finalize seu pedido</h1>
+  <!-- 🧾 CARRINHO DESKTOP -->
+  <div class="cart">
+    <h2>Seu carrinho</h2>
+    <ul id="cartItems"></ul>
 
-<div class="section">
-  <h2>📦 Resumo do pedido</h2>
-  <div class="resumo" id="resumoPedido">Carregando...</div>
-</div>
+    <p>Subtotal: <strong><span id="subtotal">0</span> Kz</strong></p>
+    <p>Taxa (<span id="taxPercent">15%</span>): <strong><span id="tax">0</span> Kz</strong></p>
+    <p>Total: <strong><span id="total">0</span> Kz</strong></p>
 
-<div class="section">
-  <h2>💳 Dados para pagamento</h2>
-  <div class="pagamento">
-    <strong>Angola – Transferência Bancária</strong>
+    <button class="finalizar" onclick="irParaFinalizar()">Finalizar compra</button>
 
-    <div class="linha"><span>B.F.A – IBAN</span><code id="iban1">000600002246601030178</code><button class="copy-btn" onclick="copiar('iban1',this)">Copiar</button></div>
-    <div class="linha"><span>B.A.I – IBAN</span><code id="iban2">004000000242539210149</code><button class="copy-btn" onclick="copiar('iban2',this)">Copiar</button></div>
-    <div class="linha"><span>BIC – IBAN</span><code id="iban3">005100005439922710131</code><button class="copy-btn" onclick="copiar('iban3',this)">Copiar</button></div>
-    <div class="linha"><span>Millennium – IBAN</span><code id="iban4">005500001693032510136</code><button class="copy-btn" onclick="copiar('iban4',this)">Copiar</button></div>
-    <div class="linha"><span>Banco Sol – IBAN</span><code id="iban5">004400009979788510185</code><button class="copy-btn" onclick="copiar('iban5',this)">Copiar</button></div>
-
-    <hr style="margin:14px 0">
-
-    <strong>Brasil – PIX</strong>
-    <div class="linha"><span>Chave PIX</span><code id="pix">43604725000100</code><button class="copy-btn" onclick="copiar('pix',this)">Copiar</button></div>
+    <div class="info">
+      • Taxa de serviço: 15% abaixo de 150.000 Kz<br>
+      • Taxa de serviço: 10% acima de 150.000 Kz<br>
+      • Taxa alfandegária: 30%<br>
+      • Peso informado antes do envio
+    </div>
   </div>
 </div>
 
-<div class="section">
-  <h2>👤 Dados do cliente</h2>
-  <label>Nome completo *</label><input id="nome">
-  <label>WhatsApp *</label><input id="whatsapp">
-  <label>Cidade / Província *</label><input id="cidade">
-</div>
-
-<div class="section">
-  <h2>📎 Comprovante de pagamento *</h2>
-  <div style="position:relative">
-    <input type="file" id="comprovante" accept=".jpg,.jpeg,.png,.pdf">
-    <button type="button" id="removeFile"
-      style="display:none;position:absolute;right:10px;top:8px;
-      border:none;background:#ff4d4d;color:#fff;border-radius:50%;
-      width:22px;height:22px;cursor:pointer">×</button>
-  </div>
-</div>
-
-<button class="enviar" id="btnEnviar" disabled>Enviar pedido</button>
-<button class="voltar" onclick="window.location.href='index.html'">← Voltar ao catálogo</button>
-
-<div class="footer">O envio só é liberado após anexar o comprovante.</div>
+<!-- 📱 BARRA FIXA MOBILE -->
+<div class="mobile-cart">
+  <button onclick="irParaFinalizar()">
+    Finalizar compra • <span id="mobileTotal">0</span> Kz
+  </button>
 </div>
 
 <script>
-const resumoDiv=document.getElementById("resumoPedido");
-let cart={};
+let productsData=[], cart={};
 
-try{cart=JSON.parse(localStorage.getItem("cart"))||{}}catch{}
+function carregarProdutos(data){
+  productsData=data;
+  criarCategorias();
+  render();
+}
 
-if(!Object.keys(cart).length){
-  resumoDiv.innerHTML="Nenhum produto encontrado no carrinho.";
-}else{
-  let subtotal=0;
-  let html="<ul>";
-  Object.values(cart).forEach(i=>{
-    subtotal+=i.price*i.qty;
-    html+=`<li>${i.name} (${i.qty}x)</li>`;
+const api=document.createElement("script");
+api.src="https://script.google.com/macros/s/AKfycbw0arV3ESUNpLob63yRkE078OnVgiHURTSSKFfeoPqXLcTD6WNATY1q3WTV_8yMJa9j/exec?callback=carregarProdutos";
+document.body.appendChild(api);
+
+const getCategoria=p=>p.categoria||p.category||"";
+const getImagem=p=>p.imagem||p.image||"";
+const getNome=p=>p.name||p.nome||"";
+
+function criarCategorias(){
+  const menu=document.getElementById("menuCategorias");
+  menu.innerHTML="";
+  ["Todos",...new Set(productsData.map(getCategoria).filter(Boolean))].forEach(c=>{
+    const b=document.createElement("button");
+    b.innerText=c;
+    b.onclick=()=>render(c);
+    menu.appendChild(b);
   });
-  const rate=subtotal>=150000?0.10:0.15;
-  const tax=subtotal*rate;
-  const total=subtotal+tax;
-  html+="</ul>";
-  html+=`<p><strong>Subtotal:</strong> ${subtotal.toLocaleString("pt-BR")} Kz</p>`;
-  html+=`<p><strong>Taxa (${rate*100}%):</strong> ${tax.toLocaleString("pt-BR")} Kz</p>`;
-  html+=`<p><strong>Total a pagar:</strong> ${total.toLocaleString("pt-BR")} Kz</p>`;
-  resumoDiv.innerHTML=html;
 }
 
-function copiar(id,btn){
-  navigator.clipboard.writeText(document.getElementById(id).innerText);
-  btn.innerText="Copiado ✓";
-  setTimeout(()=>btn.innerText="Copiar",1500);
+function render(cat="Todos"){
+  const pDiv=document.getElementById("products");
+  pDiv.innerHTML="";
+  productsData.filter(p=>cat==="Todos"||getCategoria(p)===cat).forEach((p,i)=>{
+    const d=document.createElement("div");
+    d.className="card";
+    d.innerHTML=`
+      <div class="card-image" style="background-image:url('${getImagem(p)}')"></div>
+      <h3>${getNome(p)}</h3>
+      <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
+      <div class="controls">
+        <input type="number" min="1" value="1" id="q-${i}">
+        <button onclick="addToCart('${p.id}',${i})">Adicionar</button>
+      </div>`;
+    pDiv.appendChild(d);
+  });
 }
 
-const fileInput=document.getElementById("comprovante");
-const removeBtn=document.getElementById("removeFile");
-const btnEnviar=document.getElementById("btnEnviar");
-
-function validar(){
-  btnEnviar.disabled=!(
-    nome.value.trim() &&
-    whatsapp.value.trim() &&
-    cidade.value.trim() &&
-    fileInput.files.length
-  );
+function addToCart(id,i){
+  const p=productsData.find(x=>String(x.id)===String(id));
+  const q=parseInt(document.getElementById("q-"+i).value)||1;
+  cart[id]?cart[id].qty+=q:cart[id]={...p,qty:q};
+  updateCart();
 }
 
-["nome","whatsapp","cidade"].forEach(id=>{
-  document.getElementById(id).addEventListener("input",validar);
-});
-
-fileInput.onchange=()=>{
-  if(fileInput.files.length) removeBtn.style.display="block";
-  validar();
-};
-
-removeBtn.onclick=()=>{
-  fileInput.value="";
-  removeBtn.style.display="none";
-  btnEnviar.disabled=true;
-};
-
-btnEnviar.onclick = async () => {
+function updateCart(){
   let subtotal=0;
-  const itens=Object.values(cart).map(i=>{
+  cartItems.innerHTML=Object.values(cart).map(i=>{
     subtotal+=i.price*i.qty;
-    return `${i.id}:${i.qty}`;
-  }).join(" | ");
+    return `<li>${i.name} (${i.qty}x)</li>`;
+  }).join("");
 
-  const file=fileInput.files[0];
-  const reader=new FileReader();
+  const rate=subtotal>=150000?0.10:0.15;
+  subtotal.innerText=subtotal.toLocaleString("pt-BR");
+  tax.innerText=(subtotal*rate).toLocaleString("pt-BR");
+  total.innerText=(subtotal*(1+rate)).toLocaleString("pt-BR");
+  taxPercent.innerText=(rate*100)+"%";
+  mobileTotal.innerText=(subtotal*(1+rate)).toLocaleString("pt-BR");
+}
 
-  reader.onload = async () => {
-    const payload={
-      nome:nome.value.trim(),
-      whatsapp:whatsapp.value.trim(),
-      cidade:cidade.value.trim(),
-      itens,
-      subtotal,
-      file:reader.result.split(",")[1],
-      fileName:file.name,
-      fileType:file.type
-    };
-
-    try{
-      const resp = await fetch(
-        "https://script.google.com/macros/s/AKfycbzHWorUhHlVEYLACZ0_yZWo-mBPlI9Ce3kbNPgvTSYXfAnt49mnvRD7Hb5n9hBJ_q_k/exec",
-        {
-          method:"POST",
-          body:new URLSearchParams({data:JSON.stringify(payload)})
-        }
-      );
-
-      await resp.text(); // garante que chegou
-
-      localStorage.removeItem("cart");
-      window.location.href="sucesso.html";
-
-    }catch(err){
-      alert("Erro ao enviar pedido. Verifique sua conexão.");
-    }
-  };
-
-  reader.readAsDataURL(file);
-};
+function irParaFinalizar(){
+  if(!Object.keys(cart).length){alert("Carrinho vazio");return;}
+  localStorage.setItem("cart",JSON.stringify(cart));
+  window.location.href="finalizar.html";
+}
 </script>
 
 </body>
