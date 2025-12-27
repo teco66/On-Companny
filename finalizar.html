@@ -21,13 +21,8 @@ body{
   padding:24px;
   box-shadow:0 10px 25px rgba(0,0,0,.08);
 }
-h1{
-  margin-top:0;
-  text-align:center;
-}
-.section{
-  margin-bottom:28px;
-}
+h1{text-align:center;margin-top:0}
+.section{margin-bottom:28px}
 .section h2{
   font-size:18px;
   margin-bottom:12px;
@@ -38,14 +33,23 @@ h1{
   border-radius:12px;
   font-size:14px;
 }
-.resumo ul{
-  padding-left:18px;
-  margin:8px 0;
+.resumo ul{padding-left:18px;margin:8px 0}
+.resumo strong{display:block;margin-top:6px}
+
+.pagamento{
+  background:#f0f7f4;
+  border:1px solid #cfe7dd;
+  padding:16px;
+  border-radius:12px;
+  font-size:14px;
 }
-.resumo strong{
-  display:block;
-  margin-top:6px;
+.pagamento p{
+  margin:6px 0;
 }
+.pagamento strong{
+  color:#2f6f5e;
+}
+
 label{
   display:block;
   font-size:14px;
@@ -59,9 +63,8 @@ input, textarea{
   font-size:14px;
 }
 textarea{resize:none}
-input[type="file"]{
-  padding:6px;
-}
+input[type="file"]{padding:6px}
+
 button{
   width:100%;
   padding:14px;
@@ -96,6 +99,21 @@ button:disabled{
   <h2>📦 Resumo do pedido</h2>
   <div class="resumo" id="resumoPedido">
     Carregando pedido...
+  </div>
+</div>
+
+<!-- 💰 INFORMAÇÕES DE PAGAMENTO -->
+<div class="section">
+  <h2>💰 Informações de pagamento</h2>
+  <div class="pagamento">
+    <p><strong>Banco:</strong> Banco Exemplo</p>
+    <p><strong>Titular:</strong> On Company LTDA</p>
+    <p><strong>Conta:</strong> 00000-0</p>
+    <p><strong>PIX:</strong> contato@oncompany.com</p>
+
+    <p style="margin-top:10px;font-size:13px;color:#555">
+      ⚠️ Após realizar o pagamento, anexe o comprovante abaixo para confirmação.
+    </p>
   </div>
 </div>
 
@@ -136,73 +154,54 @@ button:disabled{
 </div>
 
 <script>
-/* ===============================
-   🔹 CARREGAR RESUMO DO CARRINHO
-   =============================== */
+const resumoDiv=document.getElementById("resumoPedido");
+const cart=JSON.parse(localStorage.getItem("cart"))||{};
 
-const resumoDiv = document.getElementById("resumoPedido");
+if(!Object.keys(cart).length){
+  resumoDiv.innerHTML="Nenhum produto encontrado no carrinho.";
+}else{
+  let subtotal=0;
+  let html="<ul>";
 
-// ⚠️ ajuste se seu carrinho estiver em outro formato
-const cart = JSON.parse(localStorage.getItem("cart")) || {};
-
-if (!Object.keys(cart).length) {
-  resumoDiv.innerHTML = "Nenhum produto encontrado no carrinho.";
-} else {
-  let subtotal = 0;
-  let html = "<ul>";
-
-  Object.values(cart).forEach(i => {
-    subtotal += i.price * i.qty;
-    html += `<li>${i.name} (${i.qty}x)</li>`;
+  Object.values(cart).forEach(i=>{
+    subtotal+=i.price*i.qty;
+    html+=`<li>${i.name} (${i.qty}x)</li>`;
   });
 
-  const rate = subtotal >= 150000 ? 0.10 : 0.15;
-  const total = subtotal * (1 + rate);
+  const rate=subtotal>=150000?0.10:0.15;
+  const total=subtotal*(1+rate);
 
-  html += "</ul>";
-  html += `<strong>Subtotal: ${subtotal.toLocaleString("pt-BR")} Kz</strong>`;
-  html += `<strong>Total: ${total.toLocaleString("pt-BR")} Kz</strong>`;
+  html+="</ul>";
+  html+=`<strong>Subtotal: ${subtotal.toLocaleString("pt-BR")} Kz</strong>`;
+  html+=`<strong>Total a pagar: ${total.toLocaleString("pt-BR")} Kz</strong>`;
 
-  resumoDiv.innerHTML = html;
+  resumoDiv.innerHTML=html;
 }
 
-/* ===============================
-   🔹 ENVIO DO PEDIDO
-   =============================== */
+document.getElementById("enviarBtn").onclick=async()=>{
+  const nome=document.getElementById("nome").value.trim();
+  const whatsapp=document.getElementById("whatsapp").value.trim();
+  const cidade=document.getElementById("cidade").value.trim();
+  const obs=document.getElementById("obs").value.trim();
+  const file=document.getElementById("comprovante").files[0];
 
-document.getElementById("enviarBtn").onclick = async () => {
-
-  const nome = document.getElementById("nome").value.trim();
-  const whatsapp = document.getElementById("whatsapp").value.trim();
-  const cidade = document.getElementById("cidade").value.trim();
-  const obs = document.getElementById("obs").value.trim();
-  const fileInput = document.getElementById("comprovante");
-
-  if (!nome || !whatsapp || !cidade || !fileInput.files.length) {
+  if(!nome||!whatsapp||!cidade||!file){
     alert("Preencha todos os campos obrigatórios.");
     return;
   }
 
-  const formData = new FormData();
-  formData.append("nome", nome);
-  formData.append("whatsapp", whatsapp);
-  formData.append("cidade", cidade);
-  formData.append("obs", obs);
-  formData.append("comprovante", fileInput.files[0]);
+  const formData=new FormData();
+  formData.append("nome",nome);
+  formData.append("whatsapp",whatsapp);
+  formData.append("cidade",cidade);
+  formData.append("obs",obs);
+  formData.append("comprovante",file);
+  formData.append("pedido",JSON.stringify(cart));
 
-  formData.append("pedido", JSON.stringify(cart));
+  await fetch("URL_DO_APPS_SCRIPT_AQUI",{method:"POST",body:formData});
 
-  // 🔥 AQUI VAI O ENDPOINT DO APPS SCRIPT (vamos colocar depois)
-  await fetch("URL_DO_APPS_SCRIPT_AQUI", {
-    method: "POST",
-    body: formData
-  });
-
-  // LIMPA CARRINHO
   localStorage.removeItem("cart");
-
-  // REDIRECIONA PARA PÁGINA DE SUCESSO
-  window.location.href = "sucesso.html";
+  window.location.href="sucesso.html";
 };
 </script>
 
