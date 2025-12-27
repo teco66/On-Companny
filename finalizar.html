@@ -180,7 +180,24 @@ button.enviar:disabled{
 <!-- 📎 COMPROVANTE -->
 <div class="section">
   <h2>📎 Comprovante de pagamento *</h2>
+  <div style="position:relative">
   <input type="file" id="comprovante" accept=".jpg,.jpeg,.png,.pdf">
+  <button
+    type="button"
+    id="removeFile"
+    style="
+      display:none;
+      position:absolute;
+      right:10px;
+      top:8px;
+      border:none;
+      background:#ff4d4d;
+      color:#fff;
+      border-radius:50%;
+      width:22px;
+      height:22px;
+      cursor:pointer;
+    ">×</button>
 </div>
 
 <button class="enviar" id="btnEnviar" disabled>Enviar pedido</button>
@@ -235,9 +252,26 @@ if (!Object.keys(cart).length) {
 
   resumoDiv.innerHTML = html;
 }
+  const fileInput = document.getElementById("comprovante");
+const removeBtn = document.getElementById("removeFile");
+const btnEnviar = document.getElementById("btnEnviar");
+
+fileInput.onchange = () => {
+  if (fileInput.files.length) {
+    removeBtn.style.display = "block";
+    btnEnviar.disabled = false;
+  }
+};
+
+removeBtn.onclick = () => {
+  fileInput.value = "";
+  removeBtn.style.display = "none";
+  btnEnviar.disabled = true;
+};
 </script>
 
 </body>
 </html>
+
 
 
