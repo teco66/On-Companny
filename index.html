@@ -17,7 +17,15 @@ body{
 h1{text-align:center;margin:16px 0 4px;}
 .subtitle{text-align:center;color:#777;margin-bottom:16px;font-size:13px;}
 .menu{display:flex;justify-content:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
-.menu button{background:none;border:none;font-weight:bold;cursor:pointer;color:#555;font-size:13px;}
+.menu button{
+  background:none;
+  border:none;
+  font-weight:bold;
+  cursor:pointer;
+  color:#555;
+  font-size:15px;
+  letter-spacing:0.3px;
+}
 
 .container{
   display:flex;
@@ -86,12 +94,6 @@ h1{text-align:center;margin:16px 0 4px;}
   justify-content:space-between;
   align-items:center;
 }
-.cart li button{
-  background:none;
-  border:none;
-  cursor:pointer;
-  font-size:16px;
-}
 
 .info{
   font-size:12px;
@@ -110,6 +112,31 @@ h1{text-align:center;margin:16px 0 4px;}
   color:#fff;
   font-size:15px;
   cursor:pointer;
+}
+
+/* 🔹 REDES SOCIAIS NO CARRINHO */
+.cart-social{
+  margin-top:18px;
+  padding-top:14px;
+  border-top:1px solid #eee;
+  font-size:13px;
+  color:#666;
+}
+.cart-social p{
+  margin:0 0 10px;
+  font-weight:bold;
+}
+.cart-social a{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  text-decoration:none;
+  color:#555;
+  margin-bottom:8px;
+}
+.cart-social img{
+  width:18px;
+  height:18px;
 }
 
 @media (max-width:900px){
@@ -137,7 +164,6 @@ h1{text-align:center;margin:16px 0 4px;}
     <p>Taxa (<span id="taxPercent">15%</span>): <strong><span id="tax">0</span> Kz</strong></p>
     <p>Total: <strong><span id="total">0</span> Kz</strong></p>
 
-    <!-- ✅ BOTÃO CORRETO -->
     <button class="finalizar" onclick="irParaFinalizar()">Finalizar compra</button>
 
     <div class="info">
@@ -147,6 +173,22 @@ h1{text-align:center;margin:16px 0 4px;}
       • Custo de peso: 16.000 Kz por kg<br>
       • Peso informado antes do envio
     </div>
+
+    <!-- 🔹 REDES SOCIAIS -->
+    <div class="cart-social">
+      <p>Nos acompanhe nas redes sociais</p>
+
+      <a href="https://www.instagram.com/oncompany25" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png">
+        @oncompany25
+      </a>
+
+      <a href="https://www.tiktok.com/@oncompany25" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png">
+        @oncompany25
+      </a>
+    </div>
+
   </div>
 </div>
 
@@ -232,21 +274,15 @@ function updateCart(){
   taxPercent.innerText=(rate*100)+"%";
 }
 
-/* ✅ FUNÇÃO NOVA, NO LUGAR CERTO */
 function irParaFinalizar(){
   if(!Object.keys(cart).length){
     alert("Adicione produtos ao carrinho");
     return;
   }
-
-  // salva o carrinho completo
   localStorage.setItem("cart", JSON.stringify(cart));
-
-  // vai para a página de finalizar
   window.location.href = "finalizar.html";
 }
 </script>
 
 </body>
 </html>
-
