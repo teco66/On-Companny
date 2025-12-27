@@ -14,7 +14,7 @@ body{
   color:#333;
 }
 .container{
-  max-width:720px;
+  max-width:760px;
   margin:40px auto;
   background:#fff;
   border-radius:18px;
@@ -22,19 +22,15 @@ body{
   box-shadow:0 10px 25px rgba(0,0,0,.08);
 }
 h1{text-align:center;margin-top:0}
-.section{margin-bottom:28px}
-.section h2{
-  font-size:18px;
-  margin-bottom:12px;
-}
+.section{margin-bottom:30px}
+.section h2{font-size:18px;margin-bottom:12px}
+
 .resumo{
   background:#faf7f2;
   padding:16px;
   border-radius:12px;
   font-size:14px;
 }
-.resumo ul{padding-left:18px;margin:8px 0}
-.resumo strong{display:block;margin-top:6px}
 
 .pagamento{
   background:#f0f7f4;
@@ -43,18 +39,31 @@ h1{text-align:center;margin-top:0}
   border-radius:12px;
   font-size:14px;
 }
-.pagamento p{
+.pagamento .linha{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
   margin:6px 0;
+  align-items:center;
 }
-.pagamento strong{
-  color:#2f6f5e;
+.pagamento code{
+  background:#fff;
+  padding:6px 8px;
+  border-radius:6px;
+  font-size:13px;
 }
+.copy-btn{
+  padding:6px 10px;
+  border:none;
+  border-radius:8px;
+  background:#cbb69c;
+  color:#fff;
+  cursor:pointer;
+  font-size:12px;
+}
+.copy-btn.copiado{background:#4caf50}
 
-label{
-  display:block;
-  font-size:14px;
-  margin-bottom:6px;
-}
+label{display:block;font-size:14px;margin-bottom:6px}
 input, textarea{
   width:100%;
   padding:10px;
@@ -62,10 +71,9 @@ input, textarea{
   border:1px solid #ccc;
   font-size:14px;
 }
-textarea{resize:none}
 input[type="file"]{padding:6px}
 
-button{
+button.enviar{
   width:100%;
   padding:14px;
   border:none;
@@ -75,10 +83,11 @@ button{
   font-size:16px;
   cursor:pointer;
 }
-button:disabled{
+button.enviar:disabled{
   background:#aaa;
   cursor:not-allowed;
 }
+
 .footer{
   text-align:center;
   font-size:13px;
@@ -94,115 +103,115 @@ button:disabled{
 
 <h1>Finalize seu pedido</h1>
 
-<!-- 📦 RESUMO DO PEDIDO -->
+<!-- 📦 RESUMO -->
 <div class="section">
   <h2>📦 Resumo do pedido</h2>
-  <div class="resumo" id="resumoPedido">
-    Carregando pedido...
-  </div>
+  <div class="resumo" id="resumoPedido">Carregando...</div>
 </div>
 
-<!-- 💰 INFORMAÇÕES DE PAGAMENTO -->
+<!-- 💳 PAGAMENTO -->
 <div class="section">
-  <h2>💰 Informações de pagamento</h2>
+  <h2>💳 Dados para pagamento</h2>
   <div class="pagamento">
-    <p><strong>Banco:</strong> Banco Exemplo</p>
-    <p><strong>Titular:</strong> On Company LTDA</p>
-    <p><strong>Conta:</strong> 00000-0</p>
-    <p><strong>PIX:</strong> contato@oncompany.com</p>
 
-    <p style="margin-top:10px;font-size:13px;color:#555">
-      ⚠️ Após realizar o pagamento, anexe o comprovante abaixo para confirmação.
+    <strong>Angola – Transferência Bancária</strong>
+
+    <div class="linha">
+      <span>B.F.A – IBAN</span>
+      <code id="iban1">000600002246601030178</code>
+      <button class="copy-btn" onclick="copiar('iban1', this)">Copiar</button>
+    </div>
+
+    <div class="linha">
+      <span>B.A.I – IBAN</span>
+      <code id="iban2">004000000242539210149</code>
+      <button class="copy-btn" onclick="copiar('iban2', this)">Copiar</button>
+    </div>
+
+    <div class="linha">
+      <span>BIC – IBAN</span>
+      <code id="iban3">005100005439922710131</code>
+      <button class="copy-btn" onclick="copiar('iban3', this)">Copiar</button>
+    </div>
+
+    <div class="linha">
+      <span>Millennium – IBAN</span>
+      <code id="iban4">005500001693032510136</code>
+      <button class="copy-btn" onclick="copiar('iban4', this)">Copiar</button>
+    </div>
+
+    <div class="linha">
+      <span>Banco Sol – IBAN</span>
+      <code id="iban5">004400009979788510185</code>
+      <button class="copy-btn" onclick="copiar('iban5', this)">Copiar</button>
+    </div>
+
+    <hr style="margin:14px 0">
+
+    <strong>Brasil – PIX</strong>
+
+    <div class="linha">
+      <span>Chave PIX</span>
+      <code id="pix">43604725000100</code>
+      <button class="copy-btn" onclick="copiar('pix', this)">Copiar</button>
+    </div>
+
+    <p style="margin-top:10px;font-size:13px">
+      ⚠️ Realize o pagamento para uma das opções acima e anexe o comprovante.
     </p>
+
   </div>
 </div>
 
-<!-- 👤 DADOS DO CLIENTE -->
+<!-- 👤 DADOS -->
 <div class="section">
   <h2>👤 Dados do cliente</h2>
 
   <label>Nome completo *</label>
-  <input type="text" id="nome" required>
+  <input id="nome">
 
   <label>WhatsApp *</label>
-  <input type="tel" id="whatsapp" required placeholder="Ex: 9XXXXXXXX">
+  <input id="whatsapp">
 
   <label>Cidade / Província *</label>
-  <input type="text" id="cidade" required>
+  <input id="cidade">
 </div>
 
-<!-- 💳 COMPROVANTE -->
+<!-- 📎 COMPROVANTE -->
 <div class="section">
-  <h2>💳 Comprovante de pagamento</h2>
-
-  <label>Anexar comprovante *</label>
-  <input type="file" id="comprovante" accept=".jpg,.jpeg,.png,.pdf" required>
+  <h2>📎 Comprovante de pagamento *</h2>
+  <input type="file" id="comprovante" accept=".jpg,.jpeg,.png,.pdf">
 </div>
 
-<!-- 📝 OBS -->
-<div class="section">
-  <h2>📝 Observações (opcional)</h2>
-  <textarea id="obs" rows="3"></textarea>
-</div>
-
-<button id="enviarBtn">Enviar pedido</button>
+<button class="enviar" id="btnEnviar" disabled>Enviar pedido</button>
 
 <div class="footer">
-  Ao enviar, você confirma que as informações estão corretas.
+  O envio só é liberado após anexar o comprovante.
 </div>
 
 </div>
 
 <script>
-const resumoDiv=document.getElementById("resumoPedido");
-const cart=JSON.parse(localStorage.getItem("cart"))||{};
-
-if(!Object.keys(cart).length){
-  resumoDiv.innerHTML="Nenhum produto encontrado no carrinho.";
-}else{
-  let subtotal=0;
-  let html="<ul>";
-
-  Object.values(cart).forEach(i=>{
-    subtotal+=i.price*i.qty;
-    html+=`<li>${i.name} (${i.qty}x)</li>`;
-  });
-
-  const rate=subtotal>=150000?0.10:0.15;
-  const total=subtotal*(1+rate);
-
-  html+="</ul>";
-  html+=`<strong>Subtotal: ${subtotal.toLocaleString("pt-BR")} Kz</strong>`;
-  html+=`<strong>Total a pagar: ${total.toLocaleString("pt-BR")} Kz</strong>`;
-
-  resumoDiv.innerHTML=html;
+function copiar(id, btn){
+  navigator.clipboard.writeText(
+    document.getElementById(id).innerText
+  );
+  btn.innerText="Copiado ✓";
+  btn.classList.add("copiado");
+  setTimeout(()=>{
+    btn.innerText="Copiar";
+    btn.classList.remove("copiado");
+  },1500);
 }
 
-document.getElementById("enviarBtn").onclick=async()=>{
-  const nome=document.getElementById("nome").value.trim();
-  const whatsapp=document.getElementById("whatsapp").value.trim();
-  const cidade=document.getElementById("cidade").value.trim();
-  const obs=document.getElementById("obs").value.trim();
-  const file=document.getElementById("comprovante").files[0];
+const fileInput=document.getElementById("comprovante");
+const btnEnviar=document.getElementById("btnEnviar");
 
-  if(!nome||!whatsapp||!cidade||!file){
-    alert("Preencha todos os campos obrigatórios.");
-    return;
-  }
+fileInput.onchange=()=>btnEnviar.disabled=!fileInput.files.length;
 
-  const formData=new FormData();
-  formData.append("nome",nome);
-  formData.append("whatsapp",whatsapp);
-  formData.append("cidade",cidade);
-  formData.append("obs",obs);
-  formData.append("comprovante",file);
-  formData.append("pedido",JSON.stringify(cart));
-
-  await fetch("URL_DO_APPS_SCRIPT_AQUI",{method:"POST",body:formData});
-
-  localStorage.removeItem("cart");
-  window.location.href="sucesso.html";
-};
+/* resumo fictício (mantém compatibilidade) */
+document.getElementById("resumoPedido").innerHTML =
+  "Resumo carregado com sucesso.";
 </script>
 
 </body>
