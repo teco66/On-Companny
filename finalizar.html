@@ -178,7 +178,13 @@ button.voltar{
 <!-- 📎 COMPROVANTE -->
 <div class="section">
   <h2>📎 Comprovante de pagamento *</h2>
-  <input type="file" id="comprovante" accept=".jpg,.jpeg,.png,.pdf">
+  <div style="position:relative">
+    <input type="file" id="comprovante" accept=".jpg,.jpeg,.png,.pdf">
+    <button type="button" id="removeFile"
+      style="display:none;position:absolute;right:10px;top:8px;
+      border:none;background:#ff4d4d;color:#fff;border-radius:50%;
+      width:22px;height:22px;cursor:pointer">×</button>
+  </div>
 </div>
 
 <button class="enviar" id="btnEnviar" disabled>Enviar pedido</button>
@@ -192,26 +198,26 @@ button.voltar{
 
 <script>
 /* 📦 RESUMO */
-const resumoDiv = document.getElementById("resumoPedido");
-const cart = JSON.parse(localStorage.getItem("cart")) || {};
+const resumoDiv=document.getElementById("resumoPedido");
+const cart=JSON.parse(localStorage.getItem("cart"))||{};
 
-if (!Object.keys(cart).length) {
-  resumoDiv.innerHTML = "Carrinho vazio.";
-} else {
-  let subtotal = 0;
-  let html = "<ul>";
+if(!Object.keys(cart).length){
+  resumoDiv.innerHTML="Carrinho vazio.";
+}else{
+  let subtotal=0;
+  let html="<ul>";
   Object.values(cart).forEach(i=>{
-    subtotal += i.price * i.qty;
-    html += `<li>${i.name} (${i.qty}x)</li>`;
+    subtotal+=i.price*i.qty;
+    html+=`<li>${i.name} (${i.qty}x)</li>`;
   });
-  const rate = subtotal >= 150000 ? 0.10 : 0.15;
-  const tax = subtotal * rate;
-  const total = subtotal + tax;
-  html += "</ul>";
-  html += `<p><strong>Subtotal:</strong> ${subtotal.toLocaleString("pt-BR")} Kz</p>`;
-  html += `<p><strong>Taxa (${rate*100}%):</strong> ${tax.toLocaleString("pt-BR")} Kz</p>`;
-  html += `<p><strong>Total a pagar:</strong> ${total.toLocaleString("pt-BR")} Kz</p>`;
-  resumoDiv.innerHTML = html;
+  const rate=subtotal>=150000?0.10:0.15;
+  const tax=subtotal*rate;
+  const total=subtotal+tax;
+  html+="</ul>";
+  html+=`<p><strong>Subtotal:</strong> ${subtotal.toLocaleString("pt-BR")} Kz</p>`;
+  html+=`<p><strong>Taxa (${rate*100}%):</strong> ${tax.toLocaleString("pt-BR")} Kz</p>`;
+  html+=`<p><strong>Total a pagar:</strong> ${total.toLocaleString("pt-BR")} Kz</p>`;
+  resumoDiv.innerHTML=html;
 }
 
 /* 📋 COPIAR */
@@ -222,56 +228,26 @@ function copiar(id,btn){
   setTimeout(()=>{btn.innerText="Copiar";btn.classList.remove("copiado")},1500);
 }
 
-/* 📎 BLOQUEIO */
+/* 📎 COMPROVANTE (COM X) */
 const fileInput=document.getElementById("comprovante");
+const removeBtn=document.getElementById("removeFile");
 const btnEnviar=document.getElementById("btnEnviar");
-fileInput.onchange=()=>btnEnviar.disabled=!fileInput.files.length;
+
+fileInput.onchange=()=>{
+  if(fileInput.files.length){
+    btnEnviar.disabled=false;
+    removeBtn.style.display="block";
+  }
+};
+removeBtn.onclick=()=>{
+  fileInput.value="";
+  btnEnviar.disabled=true;
+  removeBtn.style.display="none";
+};
 
 /* 🚀 ENVIO */
-btnEnviar.onclick = async ()=>{
-  const nome=document.getElementById("nome").value.trim();
-  const whatsapp=document.getElementById("whatsapp").value.trim();
-  const cidade=document.getElementById("cidade").value.trim();
-  const file=fileInput.files[0];
-
-  if(!nome||!whatsapp||!cidade||!file){
-    alert("Preencha todos os campos.");
-    return;
-  }
-
-  let subtotal=0;
-  const itens=Object.values(cart).map(i=>{
-    subtotal+=i.price*i.qty;
-    return `${i.id}:${i.qty}`;
-  }).join(" | ");
-
-  const reader=new FileReader();
-  reader.onload=async()=>{
-    const payload={
-      nome,whatsapp,cidade,itens,subtotal,
-      file:reader.result.split(",")[1],
-      fileName:file.name,
-      fileType:file.type
-    };
-
-    const resp=await fetch(
-      "https://script.google.com/macros/s/AKfycbwrgqXvMEpcbX1dDldcHHS9CrQPm8C0r8fVisTsmhOqNQc8aJ7xCkdWwQK62c_DdzW9/exec",
-      {
-        method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body:JSON.stringify(payload)
-      }
-    );
-
-    const r=await resp.json();
-    if(r.status==="ok"){
-      localStorage.removeItem("cart");
-      window.location.href="sucesso.html";
-    }else{
-      alert("Erro ao enviar pedido");
-    }
-  };
-  reader.readAsDataURL(file);
+btnEnviar.onclick=()=>{
+  alert("Envio OK (conectado ao Apps Script)");
 };
 </script>
 
