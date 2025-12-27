@@ -198,8 +198,14 @@ button.voltar{
 
 <script>
 /* 📦 RESUMO */
-const resumoDiv=document.getElementById("resumoPedido");
-const cart=JSON.parse(localStorage.getItem("cart"))||{};
+const resumoDiv = document.getElementById("resumoPedido");
+
+let cart = {};
+try {
+  cart = JSON.parse(localStorage.getItem("cart")) || {};
+} catch (e) {
+  cart = {};
+}
 
 if(!Object.keys(cart).length){
   resumoDiv.innerHTML="Carrinho vazio.";
@@ -311,6 +317,7 @@ const result = JSON.parse(text);
 
 </body>
 </html>
+
 
 
 
