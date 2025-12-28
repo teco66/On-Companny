@@ -242,16 +242,8 @@ api.src="https://script.google.com/macros/s/AKfycbw0arV3ESUNpLob63yRkE078OnVgiHU
 document.body.appendChild(api);
 
 const getCategoria=p=>p.categoria||p.category||"";
+const getImagem=p=>p.imagem||p.image||"";
 const getNome=p=>p.nome||p.name||p.title||"";
-
-/* 🔒 IMAGEM SEGURA (FALLBACK MOBILE) */
-function getImagem(p){
-  let img = p.imagem || p.image || "";
-  if (window.innerWidth <= 900 && /\.webp$/i.test(img)) {
-    img = img.replace(/\.webp$/i, ".jpg");
-  }
-  return img;
-}
 
 function criarCategorias(){
   const m=document.getElementById("menuCategorias");
