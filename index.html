@@ -106,8 +106,6 @@ h1{text-align:center;margin:16px 0 4px;}
 .cart li{
   font-size:13px;
   margin-bottom:6px;
-  display:flex;
-  justify-content:space-between;
 }
 
 .info{
@@ -161,6 +159,20 @@ h1{text-align:center;margin:16px 0 4px;}
   font-size:12px;
 }
 
+.cart-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.remove-item{
+  display:none;
+  background:none;
+  border:none;
+  font-size:16px;
+  cursor:pointer;
+}
+
 @media(max-width:900px){
   .products{grid-template-columns:repeat(2,1fr);}
   .container{flex-direction:column;}
@@ -179,6 +191,7 @@ h1{text-align:center;margin:16px 0 4px;}
   .cart.open{display:block;}
 
   .floating-cart{display:flex;}
+  .remove-item{display:inline;}
 }
 </style>
 </head>
@@ -225,7 +238,7 @@ function carregarProdutos(data){
 }
 
 const api=document.createElement("script");
-api.src="https://script.google.com/macros/s/AKfycbyqoC0tR6BuwWSUUbDJ-8xj-LFe3KK2h9Z8zueZ1KQZVfDuiSQZgr69ujodBPUStwPK/exec?callback=carregarProdutos";
+api.src="https://script.google.com/macros/s/AKfycbw0arV3ESUNpLob63yRkE078OnVgiHURTSSKFfeoPqXLcTD6WNATY1q3WTV_8yMJa9j/exec?callback=carregarProdutos";
 document.body.appendChild(api);
 
 const getCategoria=p=>p.categoria||p.category||"";
@@ -269,17 +282,23 @@ function addToCart(id,i){
   updateCart();
 }
 
+function removeItem(id){
+  delete cart[id];
+  updateCart();
+}
+
 function updateCart(){
   let subtotalCalc=0,count=0;
   cartItems.innerHTML=Object.values(cart).map(i=>{
     subtotalCalc+=i.price*i.qty;
     count+=i.qty;
     return `
-<li class="cart-item">
-  <span>${i.name} (${i.qty}x)</span>
-  <button class="remove-item" onclick="removeItem('${i.id}')">🗑️</button>
-</li>`;
+    <li class="cart-item">
+      <span>${i.name} (${i.qty}x)</span>
+      <button class="remove-item" onclick="removeItem('${i.id}')">🗑️</button>
+    </li>`;
   }).join("");
+
   const rate=subtotalCalc>=150000?0.10:0.15;
   subtotal.textContent=subtotalCalc.toLocaleString("pt-BR");
   tax.textContent=(subtotalCalc*rate).toLocaleString("pt-BR");
@@ -301,5 +320,3 @@ function irParaFinalizar(){
 
 </body>
 </html>
-
-
