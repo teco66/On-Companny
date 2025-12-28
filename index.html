@@ -249,7 +249,7 @@ function carregarProdutos(data){
 }
 
 const api=document.createElement("script");
-api.src="https://script.google.com/macros/s/AKfycbw0arV3ESUNpLob63yRkE078OnVgiHURTSSKFfeoPqXLcTD6WNATY1q3WTV_8yMJa9j/exec?callback=carregarProdutos";
+api.src="api.src = "https://script.google.com/macros/s/AKfycbw0arV3ESUNpLob63yRkE078OnVgiHURTSSKFfeoPqXLcTD6WNATY1q3WTV_8yMJa9j/exec?callback=carregarProdutos&t=" + Date.now();";
 document.body.appendChild(api);
 
 const getCategoria=p=>p.categoria||p.category||"";
@@ -331,3 +331,4 @@ function irParaFinalizar(){
 
 </body>
 </html>
+
