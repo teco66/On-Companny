@@ -103,9 +103,36 @@ h1{text-align:center;margin:16px 0 4px;}
 }
 
 .cart ul{list-style:none;padding:0;margin:8px 0;}
-.cart li{
+
+.cart-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
   font-size:13px;
   margin-bottom:6px;
+}
+
+.remove-item{
+  background:none;
+  border:none;
+  cursor:pointer;
+  font-weight:bold;
+  line-height:1;
+  padding:4px 8px;
+}
+
+/* Desktop → X pequeno */
+.remove-item::after{
+  content:"✕";
+  font-size:14px;
+}
+
+/* Mobile → lixeira */
+@media(max-width:900px){
+  .remove-item::after{
+    content:"🗑️";
+    font-size:16px;
+  }
 }
 
 .info{
@@ -159,20 +186,6 @@ h1{text-align:center;margin:16px 0 4px;}
   font-size:12px;
 }
 
-.cart-item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.remove-item{
-  display:none;
-  background:none;
-  border:none;
-  font-size:16px;
-  cursor:pointer;
-}
-
 @media(max-width:900px){
   .products{grid-template-columns:repeat(2,1fr);}
   .container{flex-direction:column;}
@@ -189,9 +202,7 @@ h1{text-align:center;margin:16px 0 4px;}
     z-index:999;
   }
   .cart.open{display:block;}
-
   .floating-cart{display:flex;}
-  .remove-item{display:inline;}
 }
 </style>
 </head>
@@ -249,30 +260,30 @@ function criarCategorias(){
   const m=document.getElementById("menuCategorias");
   m.innerHTML="";
   ["Todos",...new Set(productsData.map(getCategoria).filter(Boolean))]
-  .forEach(c=>{
-    const b=document.createElement("button");
-    b.textContent=c;
-    b.onclick=()=>render(c);
-    m.appendChild(b);
-  });
+    .forEach(c=>{
+      const b=document.createElement("button");
+      b.textContent=c;
+      b.onclick=()=>render(c);
+      m.appendChild(b);
+    });
 }
 
 function render(cat="Todos"){
   const pDiv=document.getElementById("products");
   pDiv.innerHTML="";
   productsData.filter(p=>cat==="Todos"||getCategoria(p)===cat)
-  .forEach((p,i)=>{
-    pDiv.innerHTML+=`
-    <div class="card">
-      <div class="card-image" style="background-image:url('${getImagem(p)}')"></div>
-      <h3>${getNome(p)}</h3>
-      <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
-      <div class="controls">
-        <input type="number" min="1" value="1" id="q-${i}">
-        <button onclick="addToCart('${p.id}',${i})">Adicionar</button>
-      </div>
-    </div>`;
-  });
+    .forEach((p,i)=>{
+      pDiv.innerHTML+=`
+      <div class="card">
+        <div class="card-image" style="background-image:url('${getImagem(p)}')"></div>
+        <h3>${getNome(p)}</h3>
+        <strong>${p.price.toLocaleString("pt-BR")} Kz</strong>
+        <div class="controls">
+          <input type="number" min="1" value="1" id="q-${i}">
+          <button onclick="addToCart('${p.id}',${i})">Adicionar</button>
+        </div>
+      </div>`;
+    });
 }
 
 function addToCart(id,i){
@@ -295,7 +306,7 @@ function updateCart(){
     return `
     <li class="cart-item">
       <span>${i.name} (${i.qty}x)</span>
-      <button class="remove-item" onclick="removeItem('${i.id}')">🗑️</button>
+      <button class="remove-item" onclick="removeItem('${i.id}')"></button>
     </li>`;
   }).join("");
 
