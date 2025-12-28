@@ -55,17 +55,21 @@ h1{text-align:center;margin:16px 0 4px;}
   border-radius:16px;
   padding:12px;
   box-shadow:0 8px 18px rgba(0,0,0,.06);
+  display:flex;
+  flex-direction:column;
+  height:100%;
 }
 
 .card-image{
   width:100%;
-  aspect-ratio:1/1;
+  height:180px;               /* 🔒 altura fixa */
   border-radius:12px;
   background:#eee;
   background-size:contain;
   background-position:center;
   background-repeat:no-repeat;
   margin-bottom:8px;
+  flex-shrink:0;
 }
 
 .card h3{font-size:14px;margin:6px 0 4px;}
@@ -74,7 +78,7 @@ h1{text-align:center;margin:16px 0 4px;}
 .controls{
   display:flex;
   gap:6px;
-  margin-top:8px;
+  margin-top:auto;            /* 🔒 empurra botão para baixo */
 }
 .controls input{
   width:55px;
@@ -321,3 +325,4 @@ function irParaFinalizar(){
 
 </body>
 </html>
+
