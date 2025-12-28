@@ -216,7 +216,6 @@ h1{text-align:center;margin:16px 0 4px;}
 
     <button class="finalizar" onclick="irParaFinalizar()">Finalizar compra</button>
 
-    <!-- 🔒 INFORMAÇÕES FIXAS (RESTAURADAS) -->
     <div class="info">
       • Taxa de serviço: 15% abaixo de 150.000 Kz<br>
       • Taxa de serviço: 10% acima de 150.000 Kz<br>
@@ -239,12 +238,20 @@ function carregarProdutos(data){
 }
 
 const api=document.createElement("script");
-api.src="https://script.google.com/macros/s/AKfycbyqoC0tR6BuwWSUUbDJ-8xj-LFe3KK2h9Z8zueZ1KQZVfDuiSQZgr69ujodBPUStwPK/exec?callback=carregarProdutos";
+api.src="https://script.google.com/macros/s/AKfycbw0arV3ESUNpLob63yRkE078OnVgiHURTSSKFfeoPqXLcTD6WNATY1q3WTV_8yMJa9j/exec?callback=carregarProdutos";
 document.body.appendChild(api);
 
 const getCategoria=p=>p.categoria||p.category||"";
-const getImagem=p=>p.imagem||p.image||"";
 const getNome=p=>p.nome||p.name||p.title||"";
+
+/* 🔒 IMAGEM SEGURA (FALLBACK MOBILE) */
+function getImagem(p){
+  let img = p.imagem || p.image || "";
+  if (window.innerWidth <= 900 && /\.webp$/i.test(img)) {
+    img = img.replace(/\.webp$/i, ".jpg");
+  }
+  return img;
+}
 
 function criarCategorias(){
   const m=document.getElementById("menuCategorias");
@@ -322,4 +329,3 @@ function irParaFinalizar(){
 
 </body>
 </html>
-
