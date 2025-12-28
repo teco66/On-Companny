@@ -12,6 +12,7 @@ body{
   font-family:Arial, sans-serif;
   background:linear-gradient(180deg,#fdf9f4,#f5efe8);
   color:#333;
+  overflow-x:hidden;
 }
 
 h1{text-align:center;margin:16px 0 4px;}
@@ -123,23 +124,14 @@ h1{text-align:center;margin:16px 0 4px;}
 @media(max-width:900px){
   .products{grid-template-columns:repeat(2,1fr);}
   .container{flex-direction:column;}
-
   .remove-item::after{content:"🗑️";}
+}
 
-  .cart{
-    display:none;
-    position:fixed;
-    bottom:0;
-    left:0;
-    width:100%;
-    max-height:90%;
-    overflow:auto;
-    border-radius:20px 20px 0 0;
-    z-index:999;
-  }
-  .cart.open{display:block;}
-
-  .floating-cart{display:flex;}
+.info{
+  font-size:12px;
+  color:#666;
+  margin-top:12px;
+  line-height:1.4;
 }
 
 .finalizar{
@@ -154,6 +146,7 @@ h1{text-align:center;margin:16px 0 4px;}
   cursor:pointer;
 }
 
+/* ===== MOBILE ===== */
 .floating-cart{
   position:fixed;
   bottom:20px;
@@ -184,6 +177,22 @@ h1{text-align:center;margin:16px 0 4px;}
   justify-content:center;
   font-size:12px;
 }
+
+@media(max-width:900px){
+  .cart{
+    display:none;
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    max-height:90%;
+    overflow:auto;
+    border-radius:20px 20px 0 0;
+    z-index:999;
+  }
+  .cart.open{display:block;}
+  .floating-cart{display:flex;}
+}
 </style>
 </head>
 
@@ -206,6 +215,15 @@ h1{text-align:center;margin:16px 0 4px;}
     <p>Total: <strong><span id="total">0</span> Kz</strong></p>
 
     <button class="finalizar" onclick="irParaFinalizar()">Finalizar compra</button>
+
+    <!-- 🔒 INFORMAÇÕES FIXAS (RESTAURADAS) -->
+    <div class="info">
+      • Taxa de serviço: 15% abaixo de 150.000 Kz<br>
+      • Taxa de serviço: 10% acima de 150.000 Kz<br>
+      • Taxa alfandegária: 30% (paga na retirada)<br>
+      • Custo de peso: 16.000 Kz por kg<br>
+      • Peso informado antes do envio
+    </div>
   </div>
 </div>
 
@@ -214,30 +232,24 @@ h1{text-align:center;margin:16px 0 4px;}
 <script>
 let productsData=[], cart={};
 
-function normalizarImagem(p){
-  return p.imagem || p.Imagem || p.image || p.img || "";
-}
-function normalizarNome(p){
-  return p.nome || p.name || p.title || "";
-}
-function normalizarCategoria(p){
-  return p.categoria || p.category || "";
-}
-
 function carregarProdutos(data){
-  productsData = data;
+  productsData=data;
   criarCategorias();
   render();
 }
 
-const api = document.createElement("script");
-api.src = "https://script.google.com/macros/s/AKfycbw0arV3ESUNpLob63yRkE078OnVgiHURTSSKFfeoPqXLcTD6WNATY1q3WTV_8yMJa9j/exec?callback=carregarProdutos&nocache=1";
+const api=document.createElement("script");
+api.src="https://script.google.com/macros/s/AKfycbw0arV3ESUNpLob63yRkE078OnVgiHURTSSKFfeoPqXLcTD6WNATY1q3WTV_8yMJa9j/exec?callback=carregarProdutos";
 document.body.appendChild(api);
+
+const getCategoria=p=>p.categoria||p.category||"";
+const getImagem=p=>p.imagem||p.image||"";
+const getNome=p=>p.nome||p.name||p.title||"";
 
 function criarCategorias(){
   const m=document.getElementById("menuCategorias");
   m.innerHTML="";
-  ["Todos",...new Set(productsData.map(normalizarCategoria).filter(Boolean))]
+  ["Todos",...new Set(productsData.map(getCategoria).filter(Boolean))]
     .forEach(c=>{
       const b=document.createElement("button");
       b.textContent=c;
@@ -250,13 +262,12 @@ function render(cat="Todos"){
   const pDiv=document.getElementById("products");
   pDiv.innerHTML="";
   productsData
-    .filter(p=>cat==="Todos"||normalizarCategoria(p)===cat)
+    .filter(p=>cat==="Todos"||getCategoria(p)===cat)
     .forEach((p,i)=>{
-      const img = normalizarImagem(p);
       pDiv.innerHTML+=`
       <div class="card">
-        <div class="card-image" style="background-image:url('${img}')"></div>
-        <h3>${normalizarNome(p)}</h3>
+        <div class="card-image" style="background-image:url('${getImagem(p)}')"></div>
+        <h3>${getNome(p)}</h3>
         <strong>${Number(p.price).toLocaleString("pt-BR")} Kz</strong>
         <div class="controls">
           <input type="number" min="1" value="1" id="q-${i}">
@@ -269,7 +280,7 @@ function render(cat="Todos"){
 function addToCart(id,i){
   const p=productsData.find(x=>String(x.id)===String(id));
   const q=parseInt(document.getElementById("q-"+i).value)||1;
-  cart[id]?cart[id].qty+=q:cart[id]={id,name:normalizarNome(p),price:p.price,qty:q};
+  cart[id]?cart[id].qty+=q:cart[id]={id,name:getNome(p),price:p.price,qty:q};
   updateCart();
 }
 
