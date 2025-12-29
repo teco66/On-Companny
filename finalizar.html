@@ -188,6 +188,7 @@ function copiar(id,btn){
 const fileInput=document.getElementById("comprovante");
 const removeBtn=document.getElementById("removeFile");
 const btnEnviar=document.getElementById("btnEnviar");
+let envioEmAndamento = false;
 
 function validar(){
   btnEnviar.disabled=!(
@@ -214,6 +215,11 @@ removeBtn.onclick=()=>{
 };
 
 btnEnviar.onclick = async () => {
+  if (envioEmAndamento) return; // 🔒 impede duplo clique
+  envioEmAndamento = true;
+
+  btnEnviar.disabled = true;
+  btnEnviar.innerText = "Enviando...";
   let subtotal=0;
   const itens=Object.values(cart).map(i=>{
     subtotal+=i.price*i.qty;
@@ -250,8 +256,12 @@ btnEnviar.onclick = async () => {
       window.location.href="sucesso.html";
 
     }catch(err){
-      alert("Erro ao enviar pedido. Verifique sua conexão.");
-    }
+  envioEmAndamento = false;
+  btnEnviar.disabled = false;
+  btnEnviar.innerText = "Enviar pedido";
+  alert("Erro ao enviar pedido. Verifique sua conexão.");
+}
+
   };
 
   reader.readAsDataURL(file);
@@ -260,3 +270,4 @@ btnEnviar.onclick = async () => {
 
 </body>
 </html>
+
