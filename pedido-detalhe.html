@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>On Company | Pedido</title>
+
+  <!-- CSS principal do sistema -->
+  <link rel="stylesheet" href="assets/css/main.css" />
+
+  <!-- Evita zoom estranho em celular -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+
+  <!-- =========================
+       TOPO / CABEÇALHO
+  ========================== -->
+  <header>
+    <h1>Pedido #<span id="pedido-id">----</span></h1>
+    <a href="pedidos.html">← Voltar para pedidos</a>
+  </header>
+
+  <!-- =========================
+       BLOCO 1 — DADOS DO CLIENTE
+  ========================== -->
+  <section id="cliente">
+    <h2>Cliente</h2>
+
+    <p><strong>Nome:</strong> <span id="cliente-nome">---</span></p>
+    <p><strong>WhatsApp:</strong> <span id="cliente-whatsapp">---</span></p>
+    <p><strong>Cidade:</strong> <span id="cliente-cidade">---</span></p>
+    <p><strong>Data do pedido:</strong> <span id="pedido-data">---</span></p>
+  </section>
+
+  <hr />
+
+  <!-- =========================
+       BLOCO 2 — PRODUTOS DO PEDIDO
+  ========================== -->
+  <section id="produtos">
+    <h2>Produtos</h2>
+
+    <!-- Tabela simples de produtos -->
+    <table border="1" width="100%">
+      <thead>
+        <tr>
+          <th>Foto</th>
+          <th>Produto</th>
+          <th>Qtd</th>
+          <th>Valor (KZ)</th>
+          <th>Subtotal (KZ)</th>
+        </tr>
+      </thead>
+      <tbody id="lista-produtos">
+        <!-- 
+          Aqui depois o sistema vai "desenhar" os produtos automaticamente.
+          Por enquanto, pode deixar vazio.
+        -->
+      </tbody>
+    </table>
+  </section>
+
+  <hr />
+
+  <!-- =========================
+       BLOCO 3 — VALORES (AUTOMÁTICO)
+  ========================== -->
+  <section id="financeiro">
+    <h2>Resumo Financeiro</h2>
+
+    <p>Total dos produtos: <strong><span id="total-produtos">0</span> KZ</strong></p>
+    <p>Taxa de serviço: <strong><span id="taxa-servico">0</span> KZ</strong></p>
+    <p>Taxas logísticas: <strong><span id="taxas-logistica">0</span> KZ</strong></p>
+
+    <p style="font-size: 18px;">
+      Total pago: <strong><span id="total-pago">0</span> KZ</strong>
+    </p>
+  </section>
+
+  <hr />
+
+  <!-- =========================
+       BLOCO 4 — COMPROVANTE
+  ========================== -->
+  <section id="comprovante">
+    <h2>Comprovante de Pagamento</h2>
+
+    <!-- Imagem do comprovante -->
+    <img 
+      id="img-comprovante" 
+      src="" 
+      alt="Comprovante de pagamento" 
+      style="max-width: 100%; display: none;"
+    />
+
+    <!-- Botão futuro para download -->
+    <button id="btn-ver-comprovante">Ver comprovante</button>
+  </section>
+
+  <hr />
+
+  <!-- =========================
+       BLOCO 5 — STATUS DO PEDIDO
+  ========================== -->
+  <section id="status">
+    <h2>Status do Pedido</h2>
+
+    <select id="status-pedido">
+      <option value="">Selecione o status</option>
+      <option value="aguardando_pagamento">Aguardando pagamento</option>
+      <option value="pagamento_confirmado">Pagamento confirmado</option>
+      <option value="em_compra">Em compra</option>
+      <option value="comprado">Comprado</option>
+      <option value="em_consolidacao">Em consolidação</option>
+      <option value="enviado_brasil">Enviado do Brasil</option>
+      <option value="recebido_angola">Recebido em Angola</option>
+      <option value="disponivel_retirada">Disponível para retirada</option>
+      <option value="problema">Problema / Divergência</option>
+    </select>
+  </section>
+
+  <hr />
+
+  <!-- =========================
+       BLOCO 6 — PESO DO PEDIDO
+  ========================== -->
+  <section id="peso">
+    <h2>Peso do Pedido</h2>
+
+    <label>
+      Peso em KG:
+      <input 
+        type="number" 
+        id="peso-pedido" 
+        step="0.01" 
+        placeholder="Ex: 2.35"
+      />
+    </label>
+  </section>
+
+  <hr />
+
+  <!-- =========================
+       BLOCO 7 — OBSERVAÇÕES + FOTOS
+  ========================== -->
+  <section id="observacoes">
+    <h2>Observações</h2>
+
+    <textarea 
+      id="observacao-texto" 
+      rows="4" 
+      placeholder="Observações sobre o pedido..."
+    ></textarea>
+
+    <br /><br />
+
+    <label>
+      Anexar fotos:
+      <input type="file" multiple />
+    </label>
+  </section>
+
+  <hr />
+
+  <!-- =========================
+       BLOCO 8 — CAIXA
+  ========================== -->
+  <section id="caixa">
+    <h2>Caixa</h2>
+
+    <p>Caixa atual: <strong><span id="caixa-id">Nenhuma</span></strong></p>
+
+    <button>Adicionar à caixa</button>
+    <button>Remover da caixa</button>
+  </section>
+
+  <!-- =========================
+       JS DA PÁGINA (depois)
+  ========================== -->
+  <script src="assets/js/pedido-detalhe.js"></script>
+
+</body>
+</html>
